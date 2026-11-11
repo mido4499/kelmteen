@@ -7,18 +7,30 @@
 
 import SwiftUI
 
+/// Shows sign-up until the user has an account, then the main tabs.
 struct ContentView: View {
+    @Environment(AppModel.self) private var model
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            if model.isSignedIn {
+                MainTabView()
+            } else {
+                OnboardingView()
+            }
         }
-        .padding()
+        .animation(.default, value: model.isSignedIn)
+        // The palette is designed for light backgrounds only.
+        .preferredColorScheme(.light)
     }
 }
 
-#Preview {
+#Preview("Signed in") {
     ContentView()
+        .environment(AppModel.preview)
+}
+
+#Preview("Signed out") {
+    ContentView()
+        .environment(AppModel())
 }

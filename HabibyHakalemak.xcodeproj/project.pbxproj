@@ -6,11 +6,63 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E22642FB30A3DADA005FDA56 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22642FA30A3DADA005FDA56 /* WidgetKit.framework */; };
+		E22642FD30A3DADA005FDA56 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22642FC30A3DADA005FDA56 /* SwiftUI.framework */; };
+		E226430830A3DADC005FDA56 /* NotesWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E22642F830A3DADA005FDA56 /* NotesWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E226430630A3DADC005FDA56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2844D5830A19E61003A598E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E22642F730A3DADA005FDA56;
+			remoteInfo = NotesWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E226430D30A3DADC005FDA56 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E226430830A3DADC005FDA56 /* NotesWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		E22642F830A3DADA005FDA56 /* NotesWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotesWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E22642FA30A3DADA005FDA56 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
+		E22642FC30A3DADA005FDA56 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
+		E226430F30A3DAFD005FDA56 /* NotesWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotesWidgetExtension.entitlements; sourceTree = "<group>"; };
 		E2844D6030A19E61003A598E /* HabibyHakalemak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HabibyHakalemak.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E226430930A3DADC005FDA56 /* Exceptions for "NotesWidget" folder in "NotesWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E22642F730A3DADA005FDA56 /* NotesWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		E22642FE30A3DADA005FDA56 /* NotesWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E226430930A3DADC005FDA56 /* Exceptions for "NotesWidget" folder in "NotesWidgetExtension" target */,
+			);
+			path = NotesWidget;
+			sourceTree = "<group>";
+		};
 		E2844D6230A19E61003A598E /* HabibyHakalemak */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = HabibyHakalemak;
@@ -19,6 +71,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		E22642F530A3DADA005FDA56 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E22642FD30A3DADA005FDA56 /* SwiftUI.framework in Frameworks */,
+				E22642FB30A3DADA005FDA56 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E2844D5D30A19E61003A598E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -29,10 +90,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E22642F930A3DADA005FDA56 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E22642FA30A3DADA005FDA56 /* WidgetKit.framework */,
+				E22642FC30A3DADA005FDA56 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E2844D5730A19E61003A598E = {
 			isa = PBXGroup;
 			children = (
+				E226430F30A3DAFD005FDA56 /* NotesWidgetExtension.entitlements */,
 				E2844D6230A19E61003A598E /* HabibyHakalemak */,
+				E22642FE30A3DADA005FDA56 /* NotesWidget */,
+				E22642F930A3DADA005FDA56 /* Frameworks */,
 				E2844D6130A19E61003A598E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				E2844D6030A19E61003A598E /* HabibyHakalemak.app */,
+				E22642F830A3DADA005FDA56 /* NotesWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +122,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		E22642F730A3DADA005FDA56 /* NotesWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E226430A30A3DADC005FDA56 /* Build configuration list for PBXNativeTarget "NotesWidgetExtension" */;
+			buildPhases = (
+				E22642F430A3DADA005FDA56 /* Sources */,
+				E22642F530A3DADA005FDA56 /* Frameworks */,
+				E22642F630A3DADA005FDA56 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				E22642FE30A3DADA005FDA56 /* NotesWidget */,
+			);
+			name = NotesWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = NotesWidgetExtension;
+			productReference = E22642F830A3DADA005FDA56 /* NotesWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		E2844D5F30A19E61003A598E /* HabibyHakalemak */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E2844D6B30A19E62003A598E /* Build configuration list for PBXNativeTarget "HabibyHakalemak" */;
@@ -55,10 +151,12 @@
 				E2844D5C30A19E61003A598E /* Sources */,
 				E2844D5D30A19E61003A598E /* Frameworks */,
 				E2844D5E30A19E61003A598E /* Resources */,
+				E226430D30A3DADC005FDA56 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E226430730A3DADC005FDA56 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				E2844D6230A19E61003A598E /* HabibyHakalemak */,
@@ -77,9 +175,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2620;
+				LastSwiftUpdateCheck = 2720;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
+					E22642F730A3DADA005FDA56 = {
+						CreatedOnToolsVersion = 27.2;
+					};
 					E2844D5F30A19E61003A598E = {
 						CreatedOnToolsVersion = 26.2;
 					};
@@ -100,11 +201,19 @@
 			projectRoot = "";
 			targets = (
 				E2844D5F30A19E61003A598E /* HabibyHakalemak */,
+				E22642F730A3DADA005FDA56 /* NotesWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		E22642F630A3DADA005FDA56 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E2844D5E30A19E61003A598E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +224,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		E22642F430A3DADA005FDA56 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E2844D5C30A19E61003A598E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +240,99 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		E226430730A3DADC005FDA56 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E22642F730A3DADA005FDA56 /* NotesWidgetExtension */;
+			targetProxy = E226430630A3DADC005FDA56 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		E226430B30A3DADC005FDA56 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = NotesWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotesWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NotesWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 27.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = shaheen.HabibyHakalemak.NotesWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 27.2;
+			};
+			name = Debug;
+		};
+		E226430C30A3DADC005FDA56 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = NotesWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotesWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NotesWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 27.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = shaheen.HabibyHakalemak.NotesWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 27.2;
+			};
+			name = Release;
+		};
 		E2844D6930A19E62003A598E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -249,6 +457,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HabibyHakalemak/HabibyHakalemak.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -265,6 +474,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = shaheen.HabibyHakalemak;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -280,6 +490,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HabibyHakalemak/HabibyHakalemak.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -296,6 +507,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = shaheen.HabibyHakalemak;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -309,6 +521,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		E226430A30A3DADC005FDA56 /* Build configuration list for PBXNativeTarget "NotesWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E226430B30A3DADC005FDA56 /* Debug */,
+				E226430C30A3DADC005FDA56 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E2844D5B30A19E61003A598E /* Build configuration list for PBXProject "HabibyHakalemak" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
