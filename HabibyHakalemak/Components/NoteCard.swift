@@ -1,6 +1,6 @@
 //
 //  NoteCard.swift
-//  HabibyHakalemak
+//  Kelmteen
 //
 
 import SwiftUI

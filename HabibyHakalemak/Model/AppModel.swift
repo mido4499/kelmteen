@@ -1,6 +1,6 @@
 //
 //  AppModel.swift
-//  HabibyHakalemak
+//  Kelmteen
 //
 
 import SwiftUI
@@ -80,10 +80,13 @@ enum AppTab: Hashable {
     case write, friends, account
 }
 
-/// App-wide state. Everything is in memory for now; a backend will replace the sample data.
+/// App-wide state. The account and friends come from the backend; notes are still local
+/// until their endpoints are connected.
 @Observable
 final class AppModel {
     static let maxNoteLength = 120
+
+    private let api = KelmteenAPI()
 
     var currentUser: Person?
     // Keep the widget up to date whenever notes or the friends they come from change.
@@ -95,6 +98,10 @@ final class AppModel {
     }
     var notificationsEnabled = true
 
+    /// False until the saved session has been checked at launch, so returning users don't
+    /// see a flash of the sign-up screen.
+    var hasRestoredSession = false
+
     // UI state shared across tabs.
     var selectedTab: AppTab = .write
     var selectedRecipientID: Person.ID?
@@ -103,12 +110,35 @@ final class AppModel {
 
     // MARK: Account
 
-    /// Creates the account with a randomly assigned color. The backend will own this assignment
-    /// later so the color is the same on every friend's phone.
-    func signUp(name: String, phone: String, color: PaletteColor = .random()) {
-        currentUser = Person(name: name, phone: phone, color: color)
-        loadSampleData()
+    func restoreSession() async {
+        defer { hasRestoredSession = true }
+        if let profile = try? await api.restoreProfile() {
+            signIn(as: profile)
+        }
+    }
+
+    /// Texts a verification code to an E.164 phone number.
+    func sendCode(to phone: String) async throws {
+        try await api.sendCode(to: phone)
+    }
+
+    /// Verifies the code. Returning users are signed in right away and this returns true;
+    /// it returns false when a new user still needs to choose a name.
+    func verify(code: String, phone: String) async throws -> Bool {
+        guard let profile = try await api.verify(code: code, phone: phone) else { return false }
+        signIn(as: profile)
+        return true
+    }
+
+    /// Finishes sign-up for a verified user.
+    func createProfile(name: String) async throws {
+        signIn(as: try await api.createProfile(name: name))
+    }
+
+    private func signIn(as profile: Person) {
+        currentUser = profile
         selectedTab = .write
+        Task { await refreshFriends() }
     }
 
     func signOut() {
@@ -117,6 +147,7 @@ final class AppModel {
         notes = []
         selectedRecipientID = nil
         selectedTab = .write
+        Task { await api.signOut() }
     }
 
     func updateCurrentUser(_ update: (inout Person) -> Void) {
@@ -131,13 +162,52 @@ final class AppModel {
         friends.first { $0.id == id }
     }
 
-    /// Adds a friend. Their color comes from their own account; until there's a backend
-    /// it's assigned at random here.
-    func addFriend(name: String, phone: String) {
-        friends.append(Person(name: name, phone: phone, color: .random()))
+    func refreshFriends() async {
+        guard isSignedIn, let fetched = try? await api.fetchFriends() else { return }
+        friends = fetched
+    }
+
+    /// Reads the address book and marks which contacts are on Kelmteen. Contacts on the app
+    /// come first, then everyone else, each group in address book order.
+    func loadContacts() async throws -> [ContactEntry] {
+        let deviceContacts = try await DeviceContacts.load()
+
+        // Only hashes leave the phone.
+        var phoneForHash: [String: String] = [:]
+        for contact in deviceContacts {
+            for phone in contact.phones {
+                phoneForHash[PhoneNumber.hash(phone)] = phone
+            }
+        }
+        let matches = try await api.matchContacts(phoneHashes: Array(phoneForHash.keys))
+
+        let entries = deviceContacts.map { contact in
+            let match = contact.phones.lazy
+                .compactMap { phone in matches[PhoneNumber.hash(phone)].map { (phone, $0) } }
+                .first
+            return ContactEntry(
+                id: contact.id,
+                name: contact.name,
+                invitePhone: match?.0 ?? contact.phones[0],
+                user: match?.1
+            )
+        }
+        return entries.filter { $0.user != nil } + entries.filter { $0.user == nil }
+    }
+
+    /// A WhatsApp link that opens a chat with the contact, prefilled with the user's invite link.
+    func whatsAppInvite(for contact: ContactEntry) async throws -> URL {
+        let inviteLink = try await api.createInvite(phone: contact.invitePhone)
+        let message = "Add me on Kelmteen so we can send each other little notes 💌 \(inviteLink.absoluteString)"
+        // wa.me wants the number without the leading "+".
+        var components = URLComponents(string: "https://wa.me/\(contact.invitePhone.dropFirst())")
+        components?.queryItems = [URLQueryItem(name: "text", value: message)]
+        guard let url = components?.url else { throw URLError(.badURL) }
+        return url
     }
 
     func remove(_ friend: Person) {
+        Task { try? await api.removeFriend(id: friend.id) }
         friends.removeAll { $0.id == friend.id }
         notes.removeAll { $0.senderID == friend.id || $0.recipientID == friend.id }
         if selectedRecipientID == friend.id {
@@ -197,7 +267,9 @@ final class AppModel {
 
     static var preview: AppModel {
         let model = AppModel()
-        model.signUp(name: "Ahmed Shaheen", phone: "+20 100 123 4567", color: .bubblegum)
+        model.hasRestoredSession = true
+        model.currentUser = Person(name: "Ahmed Shaheen", phone: "+201001234567", color: .bubblegum)
+        model.loadSampleData()
         return model
     }
 }

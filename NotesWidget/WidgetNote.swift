@@ -38,7 +38,7 @@ struct WidgetNote: Codable, Hashable {
 }
 
 enum WidgetNoteStore {
-    static let appGroup = "group.shaheen.HabibyHakalemak"
+    static let appGroup = "group.com.ahmedshaheen.kelmteen"
     static let notesKey = "receivedNotes"
 
     /// The most recent unexpired note the user received.

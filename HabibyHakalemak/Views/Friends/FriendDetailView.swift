@@ -1,6 +1,6 @@
 //
 //  FriendDetailView.swift
-//  HabibyHakalemak
+//  Kelmteen
 //
 
 import SwiftUI

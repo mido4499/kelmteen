@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  HabibyHakalemak
+//  Kelmteen
 //
 //  Created by Ahmed Shaheen on 11/8/26.
 //
@@ -13,13 +13,16 @@ struct ContentView: View {
 
     var body: some View {
         Group {
-            if model.isSignedIn {
+            if !model.hasRestoredSession {
+                Color.lightBackground.ignoresSafeArea()
+            } else if model.isSignedIn {
                 MainTabView()
             } else {
                 OnboardingView()
             }
         }
         .animation(.default, value: model.isSignedIn)
+        .task { await model.restoreSession() }
         // The palette is designed for light backgrounds only.
         .preferredColorScheme(.light)
     }

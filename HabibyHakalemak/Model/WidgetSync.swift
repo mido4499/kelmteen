@@ -1,6 +1,6 @@
 //
 //  WidgetSync.swift
-//  HabibyHakalemak
+//  Kelmteen
 //
 
 import Foundation
@@ -9,7 +9,7 @@ import WidgetKit
 /// Mirrors the notes the user received into the shared App Group so the widget can show them.
 /// The widget decodes the same JSON shape (see `WidgetNote` in the NotesWidget target).
 enum WidgetSync {
-    static let appGroup = "group.shaheen.HabibyHakalemak"
+    static let appGroup = "group.com.ahmedshaheen.kelmteen"
     static let notesKey = "receivedNotes"
 
     private struct WidgetNote: Codable {

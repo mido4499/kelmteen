@@ -1,6 +1,6 @@
 //
 //  FriendsView.swift
-//  HabibyHakalemak
+//  Kelmteen
 //
 
 import SwiftUI
@@ -44,8 +44,19 @@ struct FriendsView: View {
             .navigationDestination(for: Person.ID.self) { id in
                 FriendDetailView(friendID: id)
             }
+            .task { await model.refreshFriends() }
+            .refreshable { await model.refreshFriends() }
             .sheet(isPresented: $isAddingFriend) {
-                AddFriendView()
+                NavigationStack {
+                    ContactsView()
+                        .navigationTitle("Add Friends")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done", systemImage: "checkmark") { isAddingFriend = false }
+                            }
+                        }
+                }
             }
         }
     }

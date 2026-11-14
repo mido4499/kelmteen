@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Kelmteen</title>
+    <meta name="description" content="Little notes from your people, right on your Home Screen.">
+    <meta property="og:title" content="Kelmteen">
+    <meta property="og:description" content="Little notes from your people, right on your Home Screen.">
+    <style>
+        :root {
+            --ink: #1E2A4A;
+            --background: #FFF8EE;
+            --sky: #8CCBFF;
+            --bubblegum: #FFB3D1;
+            --sunshine: #FFE27A;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px;
+            background: var(--background);
+            color: var(--ink);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Helvetica Neue", sans-serif;
+            text-align: center;
+        }
+        main { width: 100%; max-width: 380px; }
+        .avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 46px;
+            background: var(--sky);
+            border: 4px solid rgba(255, 255, 255, 0.7);
+            background-size: cover;
+            background-position: center;
+        }
+        h1 { font-size: 30px; margin: 0 0 12px; }
+        p { font-size: 18px; line-height: 1.4; opacity: 0.7; margin: 0 0 32px; }
+        .button {
+            display: block;
+            padding: 22px;
+            border-radius: 999px;
+            background: var(--sky);
+            color: var(--ink);
+            font-size: 22px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .hint { font-size: 15px; margin-top: 20px; }
+        [hidden] { display: none !important; }
+    </style>
+</head>
+<body>
+<main>
+    <div class="avatar" id="avatar" aria-hidden="true">💌</div>
+    <h1 id="title">Kelmteen</h1>
+    <p id="subtitle">Little notes from your people, right on your Home Screen.</p>
+    <a class="button" id="download" href="#">Get Kelmteen</a>
+    <p class="hint" id="hint" hidden>
+        After you sign up with this phone number, Kelmteen will ask if you want to add them.
+    </p>
+</main>
+
+<script>
+    // Public values: the publishable key only allows what row level security permits.
+    const SUPABASE_URL = "https://slwarapujtjzjtlhdciw.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_OuSLIA4YfvWOaI8B1T-fFw__2cY17Mm";
+    // TODO: Replace with the App Store (or public TestFlight) link once the app is listed.
+    const APP_STORE_URL = "https://apps.apple.com/";
+
+    document.getElementById("download").href = APP_STORE_URL;
+
+    // Invite links look like /i/<code>. If the app is installed, iOS opens it directly and this
+    // page never loads, so anyone seeing this needs to download the app first.
+    const match = location.pathname.match(/^\/i\/([A-Za-z0-9_-]{1,32})\/?$/);
+    if (match) {
+        showInvite(match[1]);
+    }
+
+    async function showInvite(code) {
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/invite_preview`, {
+                method: "POST",
+                headers: {
+                    "apikey": SUPABASE_KEY,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ code })
+            });
+            const [inviter] = await response.json();
+            if (!inviter) return;
+
+            const firstName = inviter.name.split(" ")[0];
+            const initials = inviter.name.split(" ").slice(0, 2)
+                .map(part => part[0] || "").join("").toUpperCase();
+
+            const avatar = document.getElementById("avatar");
+            avatar.style.background = `var(--${inviter.color})`;
+            if (inviter.photo_path) {
+                const photoURL = `${SUPABASE_URL}/storage/v1/object/public/avatars/${inviter.photo_path}`;
+                avatar.style.backgroundImage = `url("${encodeURI(photoURL)}")`;
+                avatar.textContent = "";
+            } else {
+                avatar.textContent = initials;
+            }
+
+            document.title = `Add ${firstName} on Kelmteen`;
+            document.getElementById("title").textContent = `${inviter.name} wants to be friends`;
+            document.getElementById("subtitle").textContent =
+                `Get Kelmteen so you and ${firstName} can send each other little notes that show up on your Home Screen.`;
+            document.getElementById("download").style.background = `var(--${inviter.color})`;
+            document.getElementById("hint").hidden = false;
+        } catch {
+            // Keep the generic page if the lookup fails.
+        }
+    }
+</script>
+</body>
+</html>

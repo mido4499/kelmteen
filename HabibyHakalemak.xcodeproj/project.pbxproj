@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		58DFD67130A50602002E315A /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 58DFD67030A50602002E315A /* Supabase */; };
 		E22642FB30A3DADA005FDA56 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22642FA30A3DADA005FDA56 /* WidgetKit.framework */; };
 		E22642FD30A3DADA005FDA56 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22642FC30A3DADA005FDA56 /* SwiftUI.framework */; };
 		E226430830A3DADC005FDA56 /* NotesWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E22642F830A3DADA005FDA56 /* NotesWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -41,7 +42,7 @@
 		E22642FA30A3DADA005FDA56 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
 		E22642FC30A3DADA005FDA56 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
 		E226430F30A3DAFD005FDA56 /* NotesWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotesWidgetExtension.entitlements; sourceTree = "<group>"; };
-		E2844D6030A19E61003A598E /* HabibyHakalemak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HabibyHakalemak.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2844D6030A19E61003A598E /* Kelmteen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kelmteen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -84,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58DFD67130A50602002E315A /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,7 +115,7 @@
 		E2844D6130A19E61003A598E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E2844D6030A19E61003A598E /* HabibyHakalemak.app */,
+				E2844D6030A19E61003A598E /* Kelmteen.app */,
 				E22642F830A3DADA005FDA56 /* NotesWidgetExtension.appex */,
 			);
 			name = Products;
@@ -163,9 +165,10 @@
 			);
 			name = HabibyHakalemak;
 			packageProductDependencies = (
+				58DFD67030A50602002E315A /* Supabase */,
 			);
 			productName = HabibyHakalemak;
-			productReference = E2844D6030A19E61003A598E /* HabibyHakalemak.app */;
+			productReference = E2844D6030A19E61003A598E /* Kelmteen.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -195,6 +198,9 @@
 			);
 			mainGroup = E2844D5730A19E61003A598E;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				58DFD66F30A5054F002E315A /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E2844D6130A19E61003A598E /* Products */;
 			projectDirPath = "";
@@ -257,6 +263,7 @@
 				CODE_SIGN_ENTITLEMENTS = NotesWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BJD4NM7F;
 				ENABLE_APP_SANDBOX = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NotesWidget/Info.plist;
@@ -275,7 +282,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 27.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = shaheen.HabibyHakalemak.NotesWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ahmedshaheen.kelmteen.NotesWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -299,6 +306,7 @@
 				CODE_SIGN_ENTITLEMENTS = NotesWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BJD4NM7F;
 				ENABLE_APP_SANDBOX = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NotesWidget/Info.plist;
@@ -317,7 +325,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 27.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = shaheen.HabibyHakalemak.NotesWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ahmedshaheen.kelmteen.NotesWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -460,8 +468,11 @@
 				CODE_SIGN_ENTITLEMENTS = HabibyHakalemak/HabibyHakalemak.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BJD4NM7F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Kelmteen;
+				INFOPLIST_KEY_NSContactsUsageDescription = "Kelmteen checks your contacts to show which friends are already here and to help you invite the rest.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -472,8 +483,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = shaheen.HabibyHakalemak;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ahmedshaheen.kelmteen;
+				PRODUCT_NAME = Kelmteen;
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -493,8 +504,11 @@
 				CODE_SIGN_ENTITLEMENTS = HabibyHakalemak/HabibyHakalemak.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BJD4NM7F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Kelmteen;
+				INFOPLIST_KEY_NSContactsUsageDescription = "Kelmteen checks your contacts to show which friends are already here and to help you invite the rest.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -505,8 +519,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = shaheen.HabibyHakalemak;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ahmedshaheen.kelmteen;
+				PRODUCT_NAME = Kelmteen;
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -549,6 +563,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		58DFD66F30A5054F002E315A /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		58DFD67030A50602002E315A /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 58DFD66F30A5054F002E315A /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E2844D5830A19E61003A598E /* Project object */;
 }

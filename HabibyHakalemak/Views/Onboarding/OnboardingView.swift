@@ -1,17 +1,18 @@
 //
 //  OnboardingView.swift
-//  HabibyHakalemak
+//  Kelmteen
 //
 
 import SwiftUI
 
 /// Sign-up flow: welcome → phone number → verification code → name.
-/// Verification is mocked until there's a backend — any 6-digit code works.
+/// Returning users skip the name step: verifying their code signs them straight in.
 struct OnboardingView: View {
     enum Step: Hashable {
         case phone
+        /// `phone` is in E.164 format.
         case code(phone: String)
-        case name(phone: String)
+        case name
     }
 
     @State private var path: [Step] = []
@@ -24,9 +25,9 @@ struct OnboardingView: View {
                     case .phone:
                         PhoneStepView { path.append(.code(phone: $0)) }
                     case .code(let phone):
-                        CodeStepView(phone: phone) { path.append(.name(phone: phone)) }
-                    case .name(let phone):
-                        NameStepView(phone: phone)
+                        CodeStepView(phone: phone) { path.append(.name) }
+                    case .name:
+                        NameStepView()
                     }
                 }
         }
@@ -58,7 +59,7 @@ private struct WelcomeView: View {
             .accessibilityHidden(true)
 
             VStack(spacing: 12) {
-                Text("Habiby Hakalemak")
+                Text("Kelmteen")
                     .font(.largeTitle)
                     .bold()
                 Text("Little notes from your people,\nright on your Home Screen.")
@@ -92,16 +93,22 @@ private struct WelcomeView: View {
 
 private struct PhoneStepView: View {
     let onContinue: (String) -> Void
+    @Environment(AppModel.self) private var model
     @State private var phone = ""
     @FocusState private var isFocused: Bool
 
     var body: some View {
+        let e164 = PhoneNumber.e164(from: phone)
         OnboardingStep(
             title: "What's your number?",
             subtitle: "We'll text you a code to verify it.",
             buttonTitle: "Continue",
-            isButtonEnabled: phone.filter(\.isNumber).count >= 8,
-            action: { onContinue(phone) }
+            isButtonEnabled: e164 != nil,
+            action: {
+                guard let e164 else { return }
+                try await model.sendCode(to: e164)
+                onContinue(e164)
+            }
         ) {
             TextField("+20 100 123 4567", text: $phone)
                 .keyboardType(.phonePad)
@@ -115,7 +122,9 @@ private struct PhoneStepView: View {
 
 private struct CodeStepView: View {
     let phone: String
+    /// Called for new users, who still need to choose a name.
     let onContinue: () -> Void
+    @Environment(AppModel.self) private var model
     @State private var code = ""
     @FocusState private var isFocused: Bool
 
@@ -125,7 +134,10 @@ private struct CodeStepView: View {
             subtitle: "Sent to \(phone).",
             buttonTitle: "Verify",
             isButtonEnabled: code.count == 6,
-            action: onContinue
+            action: {
+                let isReturningUser = try await model.verify(code: code, phone: phone)
+                if !isReturningUser { onContinue() }
+            }
         ) {
             TextField("123456", text: $code)
                 .keyboardType(.numberPad)
@@ -141,7 +153,6 @@ private struct CodeStepView: View {
 }
 
 private struct NameStepView: View {
-    let phone: String
     @Environment(AppModel.self) private var model
     @State private var name = ""
     @FocusState private var isFocused: Bool
@@ -154,7 +165,7 @@ private struct NameStepView: View {
             subtitle: "This shows up on their widget with your notes.",
             buttonTitle: "Create Account",
             isButtonEnabled: !trimmedName.isEmpty,
-            action: { model.signUp(name: trimmedName, phone: phone) }
+            action: { try await model.createProfile(name: trimmedName) }
         ) {
             TextField("Your name", text: $name)
                 .textContentType(.name)
@@ -172,8 +183,12 @@ private struct OnboardingStep<Field: View>: View {
     let subtitle: String
     let buttonTitle: String
     let isButtonEnabled: Bool
-    let action: () -> Void
+    /// Runs when the button is tapped. Errors are shown in an alert.
+    let action: () async throws -> Void
     @ViewBuilder var field: Field
+
+    @State private var isWorking = false
+    @State private var errorMessage: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -191,14 +206,44 @@ private struct OnboardingStep<Field: View>: View {
         .padding(.horizontal, 20)
         .padding(.top, 20)
         .safeAreaInset(edge: .bottom) {
-            Button(buttonTitle, action: action)
-                .buttonStyle(PillButtonStyle())
-                .disabled(!isButtonEnabled)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 8)
+            Button(action: run) {
+                if isWorking {
+                    ProgressView()
+                        .tint(Color.ink)
+                } else {
+                    Text(buttonTitle)
+                }
+            }
+            .buttonStyle(PillButtonStyle())
+            .disabled(!isButtonEnabled || isWorking)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.lightBackground.ignoresSafeArea())
+        .alert(
+            "Something went wrong",
+            isPresented: Binding(
+                get: { errorMessage != nil },
+                set: { if !$0 { errorMessage = nil } }
+            )
+        ) {
+            Button("OK") {}
+        } message: {
+            Text(errorMessage ?? "")
+        }
+    }
+
+    private func run() {
+        Task {
+            isWorking = true
+            defer { isWorking = false }
+            do {
+                try await action()
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        }
     }
 }
 

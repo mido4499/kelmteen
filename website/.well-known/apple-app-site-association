@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["D4BJD4NM7F.com.ahmedshaheen.kelmteen"],
+        "components": [
+          { "/": "/i/*", "comment": "Friend invite links" }
+        ]
+      }
+    ]
+  }
+}
