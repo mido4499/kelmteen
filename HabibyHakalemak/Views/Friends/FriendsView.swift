@@ -9,6 +9,8 @@ import SwiftUI
 struct FriendsView: View {
     @Environment(AppModel.self) private var model
     @State private var isAddingFriend = false
+    /// Links each friend's pill to their page so the pill zooms open into it.
+    @Namespace private var pillTransition
 
     var body: some View {
         NavigationStack {
@@ -17,6 +19,9 @@ struct FriendsView: View {
                     ForEach(model.friends) { friend in
                         NavigationLink(value: friend.id) {
                             FriendRow(friend: friend, hasNewNote: model.hasNote(from: friend))
+                                .matchedTransitionSource(id: friend.id, in: pillTransition) { source in
+                                    source.clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                                }
                         }
                         .buttonStyle(.plain)
                     }
@@ -43,9 +48,10 @@ struct FriendsView: View {
             .navigationTitle("Friends")
             .navigationDestination(for: Person.ID.self) { id in
                 FriendDetailView(friendID: id)
+                    .navigationTransition(.zoom(sourceID: id, in: pillTransition))
             }
-            .task { await model.refreshFriends() }
-            .refreshable { await model.refreshFriends() }
+            .task { await model.refresh() }
+            .refreshable { await model.refresh() }
             .sheet(isPresented: $isAddingFriend) {
                 NavigationStack {
                     ContactsView()
@@ -67,7 +73,13 @@ private struct FriendRow: View {
     let hasNewNote: Bool
 
     var body: some View {
-        HStack {
+        HStack(alignment: .center, spacing: 12) {
+            // Only real photos show here; friends without one get just their name.
+            if friend.hasPhoto {
+                PersonPhoto(person: friend)
+                    .frame(width: 44, height: 44)
+                    .clipShape(.circle)
+            }
             Text(friend.name)
                 .font(.title2)
                 .bold()
@@ -83,7 +95,9 @@ private struct FriendRow: View {
         }
         .foregroundStyle(Color.ink)
         .padding(.horizontal, 16)
-        .frame(minHeight: 50)
+        .padding(.vertical, 8)
+        // Every pill is the same height, with or without a photo, and its content is centered.
+        .frame(minHeight: 60, alignment: .center)
         .background(friend.color.color, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }

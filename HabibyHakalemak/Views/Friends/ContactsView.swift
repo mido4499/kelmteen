@@ -138,6 +138,7 @@ struct ContactsView: View {
         ContactRow(
             contact: contact,
             isFriend: contact.user.flatMap { model.friend(id: $0.id) } != nil,
+            isBlocked: contact.user.map { model.isBlocked($0.id) } ?? false,
             isInviting: invitingID == contact.id
         ) {
             Task { await invite(contact) }
@@ -175,6 +176,7 @@ struct ContactsView: View {
 private struct ContactRow: View {
     let contact: ContactEntry
     let isFriend: Bool
+    let isBlocked: Bool
     let isInviting: Bool
     let onInvite: () -> Void
 
@@ -200,6 +202,11 @@ private struct ContactRow: View {
 
             if isFriend {
                 Text("Friends")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.ink.opacity(0.5))
+            } else if isBlocked {
+                // Unblock from Me → Blocked first; inviting a blocked person makes no sense.
+                Text("Blocked")
                     .font(.subheadline)
                     .foregroundStyle(Color.ink.opacity(0.5))
             } else {

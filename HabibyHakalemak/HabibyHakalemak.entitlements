@@ -5,6 +5,7 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:kelmteen.ahmedshaheen.com</string>
+		<string>applinks:kelmteen.ahmedshaheen.com?mode=developer</string>
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>

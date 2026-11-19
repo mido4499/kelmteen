@@ -4,7 +4,6 @@
 //
 
 import SwiftUI
-import UIKit
 
 /// A circular avatar showing a person's photo, or their initials on their palette color.
 struct AvatarView: View {
@@ -15,15 +14,15 @@ struct AvatarView: View {
         Circle()
             .fill(person.color.color)
             .overlay {
-                if let data = person.photoData, let image = UIImage(data: data) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
+                Text(person.initials)
+                    .font(.system(size: size * 0.38))
+                    .foregroundStyle(Color.ink)
+            }
+            // The photo covers the initials once it's loaded; people without one keep them.
+            .overlay {
+                if person.hasPhoto {
+                    PersonPhoto(person: person)
                         .clipShape(.circle)
-                } else {
-                    Text(person.initials)
-                        .font(.system(size: size * 0.38))
-                        .foregroundStyle(Color.ink)
                 }
             }
             // A light ring keeps the avatar visible on a background of the same color,

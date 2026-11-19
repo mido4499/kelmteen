@@ -71,8 +71,15 @@ private struct WelcomeView: View {
 
             Spacer()
 
-            Button("Get Started", action: onGetStarted)
-                .buttonStyle(PillButtonStyle())
+            VStack(spacing: 12) {
+                Button("Get Started", action: onGetStarted)
+                    .buttonStyle(PillButtonStyle())
+                Text("By continuing, you agree to Kelmteen's [Terms](https://kelmteen.ahmedshaheen.com/terms) and [Privacy Policy](https://kelmteen.ahmedshaheen.com/privacy).")
+                    .font(.footnote)
+                    .foregroundStyle(Color.ink.opacity(0.6))
+                    .tint(Color.ink)
+                    .multilineTextAlignment(.center)
+            }
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 8)

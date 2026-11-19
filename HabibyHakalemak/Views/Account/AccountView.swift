@@ -10,14 +10,34 @@ import PhotosUI
 struct AccountView: View {
     @Environment(AppModel.self) private var model
     @State private var isConfirmingSignOut = false
+    @State private var photoSelection: PhotosPickerItem?
+    @State private var photoErrorMessage: String?
+    @State private var isConfirmingDeletion = false
+    @State private var isDeleting = false
+    @State private var deletionErrorMessage: String?
 
     var body: some View {
+        @Bindable var model = model
         NavigationStack {
             List {
                 if let user = model.currentUser {
                     Section {
                         HStack(spacing: 16) {
-                            AvatarView(person: user, size: 64)
+                            // Tapping the avatar is the only way to change the photo.
+                            PhotosPicker(selection: $photoSelection, matching: .images) {
+                                AvatarView(person: user, size: 64)
+                                    .overlay(alignment: .bottomTrailing) {
+                                        Image(systemName: "pencil")
+                                            .font(.caption.bold())
+                                            .foregroundStyle(Color.ink)
+                                            .padding(5)
+                                            .background(.white, in: .circle)
+                                            .offset(x: 3, y: 3)
+                                    }
+                            }
+                            // Borderless keeps the rest of the row from opening the picker.
+                            .buttonStyle(.borderless)
+                            .accessibilityLabel("Change profile photo")
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(user.name)
                                     .font(.title3)
@@ -34,7 +54,8 @@ struct AccountView: View {
                 }
 
                 Section {
-                    NavigationLink { NotificationSettingsView() } label: {
+                    // Notes always reach the widget; this only controls the extra notification.
+                    Toggle(isOn: $model.notificationsEnabled) {
                         AccountRow(title: "Notifications", systemImage: "bell.fill")
                     }
                     NavigationLink { EditPhoneView() } label: {
@@ -43,8 +64,17 @@ struct AccountView: View {
                     NavigationLink { EditNameView() } label: {
                         AccountRow(title: "Edit name", systemImage: "textformat")
                     }
-                    NavigationLink { EditPhotoView() } label: {
-                        AccountRow(title: "Edit profile photo", systemImage: "person.crop.circle.fill")
+                    NavigationLink { BlockedUsersView() } label: {
+                        AccountRow(title: "Blocked", systemImage: "nosign")
+                    }
+                    Link(destination: KelmteenAPI.supportURL) {
+                        AccountRow(title: "Contact Us", systemImage: "envelope.fill")
+                    }
+                    Link(destination: KelmteenAPI.termsURL) {
+                        AccountRow(title: "Terms", systemImage: "doc.text.fill")
+                    }
+                    Link(destination: KelmteenAPI.privacyURL) {
+                        AccountRow(title: "Privacy Policy", systemImage: "hand.raised.fill")
                     }
                 } header: {
                     Text("General")
@@ -56,9 +86,20 @@ struct AccountView: View {
                 .accountRowStyle()
 
                 Section {
-                    Button("Sign Out", role: .destructive) { isConfirmingSignOut = true }
+                    Button(role: .destructive) {
+                        isConfirmingDeletion = true
+                    } label: {
+                        HStack {
+                            Text("Delete Account")
+                            if isDeleting {
+                                Spacer()
+                                ProgressView()
+                            }
+                        }
                         .font(.title3)
                         .fontWeight(.semibold)
+                    }
+                    .disabled(isDeleting)
                 }
                 .accountRowStyle()
             }
@@ -66,9 +107,70 @@ struct AccountView: View {
             .scrollContentBackground(.hidden)
             .background(model.accountColor.ignoresSafeArea())
             .navigationTitle("My Account")
-            .confirmationDialog("Sign out?", isPresented: $isConfirmingSignOut) {
-                Button("Sign Out", role: .destructive) { model.signOut() }
+            .task(id: photoSelection) {
+                guard let photoSelection,
+                      let data = try? await photoSelection.loadTransferable(type: Data.self) else { return }
+                do {
+                    try await model.setProfilePhoto(data)
+                } catch {
+                    photoErrorMessage = error.localizedDescription
+                }
             }
+            .alert("Delete your account?", isPresented: $isConfirmingDeletion) {
+                Button("Cancel", role: .cancel) {}
+                Button("Delete", role: .destructive) {
+                    Task { await deleteAccount() }
+                }
+            } message: {
+                Text("This permanently deletes your account, friends, notes and photo. It can't be undone.")
+            }
+            .alert(
+                "Couldn't Delete Account",
+                isPresented: Binding(
+                    get: { deletionErrorMessage != nil },
+                    set: { if !$0 { deletionErrorMessage = nil } }
+                )
+            ) {
+                Button("OK") {}
+            } message: {
+                Text(deletionErrorMessage ?? "")
+            }
+            .alert(
+                "Couldn't Update Photo",
+                isPresented: Binding(
+                    get: { photoErrorMessage != nil },
+                    set: { if !$0 { photoErrorMessage = nil } }
+                )
+            ) {
+                Button("OK") {}
+            } message: {
+                Text(photoErrorMessage ?? "")
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Sign Out", systemImage: "rectangle.portrait.and.arrow.right") {
+                        isConfirmingSignOut = true
+                    }
+                }
+            }
+            .alert("Sign out?", isPresented: $isConfirmingSignOut) {
+                Button("Cancel", role: .cancel) {}
+                Button("Yes, Sign Out", role: .destructive) { model.signOut() }
+            } message: {
+                Text("You'll need your phone number to sign back in.")
+            }
+        }
+    }
+}
+
+extension AccountView {
+    fileprivate func deleteAccount() async {
+        isDeleting = true
+        defer { isDeleting = false }
+        do {
+            try await model.deleteAccount()
+        } catch {
+            deletionErrorMessage = "Please check your connection and try again. If it keeps failing, email us at \(KelmteenAPI.supportEmail)."
         }
     }
 }
@@ -99,23 +201,6 @@ private extension AppModel {
 }
 
 // MARK: - Edit screens
-
-private struct NotificationSettingsView: View {
-    @Environment(AppModel.self) private var model
-
-    var body: some View {
-        @Bindable var model = model
-        Form {
-            Section {
-                Toggle("New notes from friends", isOn: $model.notificationsEnabled)
-            } footer: {
-                Text("Notes always show up on your widget. This controls whether you also get a notification.")
-            }
-        }
-        .accountFormStyle(model.accountColor)
-        .navigationTitle("Notifications")
-    }
-}
 
 private struct EditNameView: View {
     @Environment(AppModel.self) private var model
@@ -178,36 +263,81 @@ private struct EditPhoneView: View {
     }
 }
 
-private struct EditPhotoView: View {
+/// People the user has blocked, each with an Unblock button.
+private struct BlockedUsersView: View {
     @Environment(AppModel.self) private var model
-    @State private var selection: PhotosPickerItem?
+    @State private var personToUnblock: Person?
+    @State private var personToReport: Person?
+    @State private var errorMessage: String?
 
     var body: some View {
-        VStack(spacing: 24) {
-            if let user = model.currentUser {
-                AvatarView(person: user, size: 160)
+        List(model.blockedUsers) { person in
+            HStack(spacing: 12) {
+                AvatarView(person: person, size: 44)
+                Text(person.name)
+                    .font(.headline)
+                Spacer()
+                Button("Unblock") { personToUnblock = person }
+                    .buttonStyle(.bordered)
+                    .tint(Color.ink)
+                    .accessibilityLabel("Unblock \(person.name)")
             }
-
-            PhotosPicker(selection: $selection, matching: .images) {
-                Text("Choose Photo")
-            }
-            .buttonStyle(PillButtonStyle(background: .lightBackground, size: .regular))
-
-            if model.currentUser?.photoData != nil {
-                Button("Remove Photo", role: .destructive) {
-                    model.updateCurrentUser { $0.photoData = nil }
+            .foregroundStyle(Color.ink)
+            .listRowBackground(Color.white.opacity(0.6))
+            .swipeActions {
+                Button("Report", systemImage: "exclamationmark.bubble") {
+                    personToReport = person
                 }
-                .font(.headline)
+                .tint(.orange)
             }
         }
-        .padding(40)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(model.accountColor.ignoresSafeArea())
-        .navigationTitle("Profile Photo")
-        .task(id: selection) {
-            guard let selection,
-                  let data = try? await selection.loadTransferable(type: Data.self) else { return }
-            model.updateCurrentUser { $0.photoData = data }
+        .sheet(item: $personToReport) { person in
+            ReportView(person: person)
+        }
+        .overlay {
+            if model.blockedUsers.isEmpty {
+                ContentUnavailableView(
+                    "No Blocked People",
+                    systemImage: "nosign",
+                    description: Text("People you block show up here.")
+                )
+                .foregroundStyle(Color.ink)
+            }
+        }
+        .accountFormStyle(model.accountColor)
+        .navigationTitle("Blocked")
+        .task { await model.refreshBlockedUsers() }
+        .alert(
+            "Unblock \(personToUnblock?.firstName ?? "")?",
+            isPresented: Binding(
+                get: { personToUnblock != nil },
+                set: { if !$0 { personToUnblock = nil } }
+            ),
+            presenting: personToUnblock
+        ) { person in
+            Button("Cancel", role: .cancel) {}
+            Button("Unblock") {
+                Task {
+                    do {
+                        try await model.unblock(person)
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
+                }
+            }
+        } message: { _ in
+            Text("If you were friends before you blocked them, you'll be friends again.")
+        }
+        .alert(
+            "Couldn't Unblock",
+            isPresented: Binding(
+                get: { errorMessage != nil },
+                set: { if !$0 { errorMessage = nil } }
+            )
+        ) {
+            Button("OK") {}
+        } message: {
+            Text(errorMessage ?? "")
         }
     }
 }

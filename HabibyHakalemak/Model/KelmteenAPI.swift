@@ -10,15 +10,22 @@ import Supabase
 /// The app's only connection to the Supabase backend. Everything Supabase-specific lives here
 /// so the rest of the app works with plain `Person` values.
 struct KelmteenAPI {
+    nonisolated private static let projectURL = URL(string: "https://slwarapujtjzjtlhdciw.supabase.co")!
+
     // The publishable key is safe to ship in the app: row level security protects the data.
     private static let client = SupabaseClient(
-        supabaseURL: URL(string: "https://slwarapujtjzjtlhdciw.supabase.co")!,
+        supabaseURL: projectURL,
         supabaseKey: "sb_publishable_OuSLIA4YfvWOaI8B1T-fFw__2cY17Mm"
     )
 
     /// Every user's permanent invite link is this followed by their invite code. The site
     /// lives in `website/` and is hosted on Cloudflare Pages.
     static let inviteBaseURL = URL(string: "https://kelmteen.ahmedshaheen.com/i/")!
+
+    static let supportEmail = "kelmteen@ahmedshaheen.com"
+    static let supportURL = URL(string: "mailto:kelmteen@ahmedshaheen.com")!
+    static let termsURL = URL(string: "https://kelmteen.ahmedshaheen.com/terms")!
+    static let privacyURL = URL(string: "https://kelmteen.ahmedshaheen.com/privacy")!
 
     private var client: SupabaseClient { Self.client }
 
@@ -53,6 +60,43 @@ struct KelmteenAPI {
 
     func signOut() async {
         try? await client.auth.signOut()
+    }
+
+    /// Permanently deletes the account and all its data (see supabase/functions/delete-account),
+    /// then clears the local session.
+    func deleteAccount() async throws {
+        try await client.functions.invoke("delete-account")
+        try? await client.auth.signOut(scope: .local)
+    }
+
+    // MARK: Photos
+
+    /// Public URL of a photo in the `avatars` bucket.
+    nonisolated static func photoURL(for path: String) -> URL {
+        projectURL
+            .appending(path: "storage/v1/object/public/avatars")
+            .appending(path: path)
+    }
+
+    /// Uploads a new profile photo, points the user's profile at it and deletes the old one.
+    /// Returns the new storage path.
+    func uploadProfilePhoto(_ jpeg: Data, replacing oldPath: String?) async throws -> String {
+        guard let userID = client.auth.currentUser?.id else { throw URLError(.userAuthenticationRequired) }
+        // Storage rules only allow writes inside the user's own folder. A new file name per
+        // upload means cached copies never show an old photo, so they can be kept for a year.
+        let path = "\(userID.uuidString.lowercased())/\(UUID().uuidString.lowercased()).jpg"
+        try await client.storage
+            .from("avatars")
+            .upload(path, data: jpeg, options: FileOptions(cacheControl: "31536000", contentType: "image/jpeg"))
+        try await client
+            .from("profiles")
+            .update(["photo_path": path])
+            .eq("id", value: userID)
+            .execute()
+        if let oldPath {
+            _ = try? await client.storage.from("avatars").remove(paths: [oldPath])
+        }
+        return path
     }
 
     // MARK: Friends
@@ -108,6 +152,131 @@ struct KelmteenAPI {
         return Self.inviteBaseURL.appending(path: code)
     }
 
+    // MARK: Invites
+
+    /// The invite code in a link like https://kelmteen.ahmedshaheen.com/i/<code>, if it is one.
+    static func inviteCode(from url: URL) -> String? {
+        guard url.host() == inviteBaseURL.host() else { return nil }
+        let parts = url.pathComponents.filter { $0 != "/" }
+        guard parts.count == 2, parts[0] == "i", !parts[1].isEmpty else { return nil }
+        return parts[1]
+    }
+
+    /// Who an invite code belongs to, or nil if the code doesn't exist.
+    func invite(code: String) async throws -> Invite? {
+        let records: [InviterRecord] = try await client
+            .rpc("invite_preview", params: ["code": code])
+            .execute()
+            .value
+        return records.first.map {
+            Invite(code: code, inviter: $0.person, isBlockedByMe: $0.blockedByMe ?? false)
+        }
+    }
+
+    /// Invites other users sent to this user's phone number before they had the app.
+    func pendingInvites() async throws -> [Invite] {
+        let records: [InviterRecord] = try await client
+            .rpc("my_pending_invites")
+            .execute()
+            .value
+        return records.compactMap { record in
+            record.inviteCode.map { Invite(code: $0, inviter: record.person) }
+        }
+    }
+
+    /// Makes the user and the invite's sender friends.
+    func acceptInvite(code: String) async throws {
+        try await client
+            .rpc("accept_invite", params: ["code": code])
+            .execute()
+    }
+
+    /// Clears an invite the user turned down so it isn't offered again.
+    func dismissInvite(code: String) async throws {
+        try await client
+            .rpc("dismiss_invite", params: ["code": code])
+            .execute()
+    }
+
+    // MARK: Devices
+
+    /// Registers this phone so its widget can load notes and get push updates.
+    func registerDevice(id: String, widgetSecret: String, widgetPushToken: String?, sandbox: Bool) async throws {
+        try await client
+            .from("devices")
+            .upsert(
+                DeviceRecord(deviceID: id, widgetSecret: widgetSecret, widgetPushToken: widgetPushToken, apnsSandbox: sandbox),
+                onConflict: "user_id,device_id"
+            )
+            .execute()
+    }
+
+    func unregisterDevice(id: String) async {
+        _ = try? await client
+            .from("devices")
+            .delete()
+            .eq("device_id", value: id)
+            .execute()
+    }
+
+    // MARK: Notes
+
+    func sendNote(_ text: String, to recipientID: UUID) async throws -> Note {
+        // Only the recipient and text come from the app; the server sets sender and times.
+        let record: NoteRecord = try await client
+            .from("notes")
+            .insert(["recipient_id": recipientID.uuidString.lowercased(), "text": text])
+            .select()
+            .single()
+            .execute()
+            .value
+        return record.note
+    }
+
+    /// Unexpired notes the user sent or received (row level security limits it to theirs).
+    func fetchNotes() async throws -> [Note] {
+        let records: [NoteRecord] = try await client
+            .from("notes")
+            .select()
+            .gt("expires_at", value: Date.now.ISO8601Format())
+            .order("sent_at", ascending: false)
+            .execute()
+            .value
+        return records.map(\.note)
+    }
+
+    // MARK: Reporting
+
+    func reportUser(id: UUID, reason: ReportReason, details: String) async throws {
+        try await client
+            .rpc("report_user", params: ReportParams(target: id, reason: reason.rawValue, details: details))
+            .execute()
+    }
+
+    // MARK: Blocking
+
+    /// Blocks someone: ends the friendship and stops them adding the user. They aren't told.
+    func blockUser(id: UUID) async throws {
+        try await client
+            .rpc("block_user", params: ["target": id])
+            .execute()
+    }
+
+    /// Unblocks someone. The server restores the friendship if they were friends before.
+    func unblockUser(id: UUID) async throws {
+        try await client
+            .rpc("unblock_user", params: ["target": id])
+            .execute()
+    }
+
+    func blockedUsers() async throws -> [Person] {
+        let records: [InviterRecord] = try await client
+            .rpc("my_blocked_users")
+            .execute()
+            .value
+        return records.map(\.person)
+    }
+
     private func currentProfile() async throws -> Person? {
         guard let userID = client.auth.currentUser?.id else { return nil }
         let profiles: [ProfileRecord] = try await client
@@ -127,14 +296,85 @@ nonisolated private struct ProfileRecord: Decodable, Sendable {
     let name: String
     let color: String
     let inviteCode: String
+    let photoPath: String?
+    let suspendedAt: String?
 
     enum CodingKeys: String, CodingKey {
         case id, phone, name, color
         case inviteCode = "invite_code"
+        case photoPath = "photo_path"
+        case suspendedAt = "suspended_at"
     }
 
     @MainActor var person: Person {
-        Person(id: id, name: name, phone: phone, color: PaletteColor(rawValue: color) ?? .sky)
+        var person = Person(id: id, name: name, phone: phone, color: PaletteColor(rawValue: color) ?? .sky, photoPath: photoPath)
+        person.isSuspended = suspendedAt != nil
+        return person
+    }
+}
+
+/// The columns of `devices` the app writes; `user_id` defaults to the signed-in user.
+nonisolated private struct DeviceRecord: Encodable, Sendable {
+    let deviceID: String
+    let widgetSecret: String
+    let widgetPushToken: String?
+    let apnsSandbox: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case deviceID = "device_id"
+        case widgetSecret = "widget_secret"
+        case widgetPushToken = "widget_push_token"
+        case apnsSandbox = "apns_sandbox"
+    }
+}
+
+/// A row of the `notes` table.
+nonisolated private struct NoteRecord: Decodable, Sendable {
+    let id: UUID
+    let senderID: UUID
+    let recipientID: UUID
+    let text: String
+    let sentAt: Date
+    let expiresAt: Date
+
+    enum CodingKeys: String, CodingKey {
+        case id, text
+        case senderID = "sender_id"
+        case recipientID = "recipient_id"
+        case sentAt = "sent_at"
+        case expiresAt = "expires_at"
+    }
+
+    @MainActor var note: Note {
+        Note(id: id, text: text, senderID: senderID, recipientID: recipientID, sentAt: sentAt, expiresAt: expiresAt)
+    }
+}
+
+nonisolated private struct ReportParams: Encodable, Sendable {
+    let target: UUID
+    let reason: String
+    let details: String
+}
+
+/// A row returned by `invite_preview`, `my_pending_invites` and `my_blocked_users`.
+/// Only pending invites include the code; only `invite_preview` says whether the user blocked them.
+nonisolated private struct InviterRecord: Decodable, Sendable {
+    let inviteCode: String?
+    let id: UUID
+    let name: String
+    let color: String
+    let photoPath: String?
+    let blockedByMe: Bool?
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, color
+        case inviteCode = "invite_code"
+        case photoPath = "photo_path"
+        case blockedByMe = "blocked_by_me"
+    }
+
+    @MainActor var person: Person {
+        Person(id: id, name: name, phone: "", color: PaletteColor(rawValue: color) ?? .sky, photoPath: photoPath)
     }
 }
 
@@ -144,14 +384,16 @@ nonisolated private struct ContactMatchRecord: Decodable, Sendable {
     let id: UUID
     let name: String
     let color: String
+    let photoPath: String?
 
     enum CodingKeys: String, CodingKey {
         case id, name, color
         case phoneHash = "phone_hash"
+        case photoPath = "photo_path"
     }
 
     @MainActor var person: Person {
-        Person(id: id, name: name, phone: "", color: PaletteColor(rawValue: color) ?? .sky)
+        Person(id: id, name: name, phone: "", color: PaletteColor(rawValue: color) ?? .sky, photoPath: photoPath)
     }
 }
 

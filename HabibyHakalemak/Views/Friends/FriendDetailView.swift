@@ -12,6 +12,9 @@ struct FriendDetailView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var isConfirmingRemoval = false
+    @State private var isConfirmingBlock = false
+    @State private var isReporting = false
+    @State private var blockErrorMessage: String?
 
     var body: some View {
         if let friend = model.friend(id: friendID) {
@@ -73,7 +76,7 @@ struct FriendDetailView: View {
             Button {
                 model.startNote(to: friend)
             } label: {
-                Image(systemName: "bubble.and.pencil")
+                Image(systemName: "paperplane")
                     .font(.largeTitle)
                     .foregroundStyle(Color.ink)
                     .padding(6)
@@ -91,6 +94,12 @@ struct FriendDetailView: View {
                     Button("Remove Friend", systemImage: "person.badge.minus", role: .destructive) {
                         isConfirmingRemoval = true
                     }
+                    Button("Report", systemImage: "exclamationmark.bubble") {
+                        isReporting = true
+                    }
+                    Button("Block", role: .destructive) {
+                        isConfirmingBlock = true
+                    }
                 } label: {
                     Label("More", systemImage: "ellipsis")
                 }
@@ -107,6 +116,40 @@ struct FriendDetailView: View {
             }
         } message: {
             Text("You won't be able to send each other notes anymore.")
+        }
+        .sheet(isPresented: $isReporting, onDismiss: {
+            // The report screen offers to block; if they did, this page is gone.
+            if model.friend(id: friendID) == nil {
+                dismiss()
+            }
+        }) {
+            ReportView(person: friend)
+        }
+        .alert("Block \(friend.firstName)?", isPresented: $isConfirmingBlock) {
+            Button("Cancel", role: .cancel) {}
+            Button("Block", role: .destructive) {
+                Task {
+                    do {
+                        try await model.block(friend)
+                        dismiss()
+                    } catch {
+                        blockErrorMessage = error.localizedDescription
+                    }
+                }
+            }
+        } message: {
+            Text("You won't be friends anymore and they can't add you. You can unblock them from Me → Blocked.")
+        }
+        .alert(
+            "Couldn't Block \(friend.firstName)",
+            isPresented: Binding(
+                get: { blockErrorMessage != nil },
+                set: { if !$0 { blockErrorMessage = nil } }
+            )
+        ) {
+            Button("OK") {}
+        } message: {
+            Text(blockErrorMessage ?? "")
         }
     }
 }

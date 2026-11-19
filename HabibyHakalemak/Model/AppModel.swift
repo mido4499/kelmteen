@@ -5,6 +5,7 @@
 
 import SwiftUI
 import Observation
+import WidgetKit
 
 /// Every account is assigned one of these at random on sign-up. It's that person's color
 /// everywhere: their account page, avatar, chat pill on friends' phones, and their notes.
@@ -31,14 +32,35 @@ struct Person: Identifiable, Hashable {
     var name: String
     var phone: String
     var color: PaletteColor
+    /// The photo picked on this device (or downloaded for the signed-in user).
     var photoData: Data?
+    /// Where the uploaded photo lives in Supabase storage; nil if they never uploaded one.
+    var photoPath: String?
+    /// Only known for the signed-in user: a moderator suspended the account.
+    var isSuspended = false
 
-    init(id: UUID = UUID(), name: String, phone: String, color: PaletteColor, photoData: Data? = nil) {
+    init(
+        id: UUID = UUID(),
+        name: String,
+        phone: String,
+        color: PaletteColor,
+        photoData: Data? = nil,
+        photoPath: String? = nil
+    ) {
         self.id = id
         self.name = name
         self.phone = phone
         self.color = color
         self.photoData = photoData
+        self.photoPath = photoPath
+    }
+
+    var photoURL: URL? {
+        photoPath.map(KelmteenAPI.photoURL(for:))
+    }
+
+    var hasPhoto: Bool {
+        photoData != nil || photoPath != nil
     }
 
     var firstName: String {
@@ -56,14 +78,30 @@ struct Person: Identifiable, Hashable {
 }
 
 struct Note: Identifiable, Hashable {
-    let id = UUID()
+    let id: UUID
     let text: String
     let senderID: Person.ID
     let recipientID: Person.ID
     let sentAt: Date
+    /// Notes live on the widget for a day; the server sets the exact time.
+    let expiresAt: Date
 
-    /// Notes live on the widget for a day.
-    var expiresAt: Date { sentAt.addingTimeInterval(24 * 60 * 60) }
+    init(
+        id: UUID = UUID(),
+        text: String,
+        senderID: Person.ID,
+        recipientID: Person.ID,
+        sentAt: Date,
+        expiresAt: Date? = nil
+    ) {
+        self.id = id
+        self.text = text
+        self.senderID = senderID
+        self.recipientID = recipientID
+        self.sentAt = sentAt
+        self.expiresAt = expiresAt ?? sentAt.addingTimeInterval(24 * 60 * 60)
+    }
+
     var isExpired: Bool { expiresAt < .now }
 
     var timeLeftDescription: String {
@@ -74,6 +112,35 @@ struct Note: Identifiable, Hashable {
         default: return "\(hours) hours left"
         }
     }
+}
+
+/// A friend invite: the sender's permanent invite code and who they are.
+/// Why someone is being reported. Raw values match the server's `reports.reason` check.
+enum ReportReason: String, CaseIterable, Identifiable {
+    case inappropriatePhoto = "inappropriate_photo"
+    case harassment
+    case spam
+    case other
+
+    var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .inappropriatePhoto: "Inappropriate photo"
+        case .harassment: "Harassment or offensive notes"
+        case .spam: "Spam or fake account"
+        case .other: "Something else"
+        }
+    }
+}
+
+struct Invite: Identifiable, Hashable {
+    let code: String
+    let inviter: Person
+    /// The user blocked the inviter, so the invite can only be accepted after unblocking.
+    var isBlockedByMe = false
+
+    var id: String { code }
 }
 
 enum AppTab: Hashable {
@@ -105,6 +172,18 @@ final class AppModel {
     // UI state shared across tabs.
     var selectedTab: AppTab = .write
     var selectedRecipientID: Person.ID?
+
+    /// The invite on screen ("Add <name> as your friend?"). Others wait in `queuedInvites`.
+    var presentedInvite: Invite?
+    private var queuedInvites: [Invite] = []
+    /// An invite link opened while signed out, handled right after sign-in.
+    private var linkedInviteCode: String?
+    /// Set when an opened invite link doesn't exist, or its owner blocked the user. The
+    /// message doesn't say which, so being blocked stays private.
+    var isShowingUnavailableInvite = false
+
+    /// People the user has blocked, shown in Me → Blocked.
+    var blockedUsers: [Person] = []
 
     var isSignedIn: Bool { currentUser != nil }
 
@@ -138,7 +217,40 @@ final class AppModel {
     private func signIn(as profile: Person) {
         currentUser = profile
         selectedTab = .write
-        Task { await refreshFriends() }
+        WidgetSync.prepareWidgetAccess(forUser: profile.id)
+        Task { await registerDevice() }
+        Task {
+            // Friends load first so invites from existing friends can be skipped.
+            await refreshFriends()
+            await refreshNotes()
+            await refreshBlockedUsers()
+            await loadInvitesAfterSignIn()
+        }
+        Task { await loadOwnPhoto() }
+    }
+
+    /// Downloads the user's uploaded photo so it shows on Me and in the tab bar, which needs
+    /// the image itself rather than a URL.
+    private func loadOwnPhoto() async {
+        guard let user = currentUser, user.photoData == nil, let url = user.photoURL,
+              let (data, _) = try? await URLSession.shared.data(from: url),
+              currentUser?.id == user.id else { return }
+        updateCurrentUser { $0.photoData = data }
+    }
+
+    /// Shows the new photo right away, then uploads it so friends see it too. Restores the
+    /// previous photo if the upload fails.
+    func setProfilePhoto(_ data: Data) async throws {
+        guard let jpeg = ProfilePhotoProcessing.avatarJPEG(from: data) else { return }
+        let previous = currentUser
+        updateCurrentUser { $0.photoData = jpeg }
+        do {
+            let path = try await api.uploadProfilePhoto(jpeg, replacing: previous?.photoPath)
+            updateCurrentUser { $0.photoPath = path }
+        } catch {
+            updateCurrentUser { $0.photoData = previous?.photoData }
+            throw error
+        }
     }
 
     func signOut() {
@@ -147,7 +259,23 @@ final class AppModel {
         notes = []
         selectedRecipientID = nil
         selectedTab = .write
-        Task { await api.signOut() }
+        presentedInvite = nil
+        queuedInvites = []
+        linkedInviteCode = nil
+        blockedUsers = []
+        let deviceID = WidgetSync.deviceID
+        WidgetSync.clearWidgetAccess()
+        Task {
+            // Unregister while still signed in, so the server stops pushing to this phone.
+            await api.unregisterDevice(id: deviceID)
+            await api.signOut()
+        }
+    }
+
+    /// Permanently deletes the account and everything in it, then returns to sign-up.
+    func deleteAccount() async throws {
+        try await api.deleteAccount()
+        signOut()
     }
 
     func updateCurrentUser(_ update: (inout Person) -> Void) {
@@ -208,11 +336,132 @@ final class AppModel {
 
     func remove(_ friend: Person) {
         Task { try? await api.removeFriend(id: friend.id) }
+        forget(friend)
+    }
+
+    /// Drops a former friend and their notes from this device.
+    private func forget(_ friend: Person) {
         friends.removeAll { $0.id == friend.id }
         notes.removeAll { $0.senderID == friend.id || $0.recipientID == friend.id }
         if selectedRecipientID == friend.id {
             selectedRecipientID = nil
         }
+    }
+
+    // MARK: Invites
+
+    /// Handles an invite link opened from WhatsApp, Safari or anywhere else.
+    func handleInviteLink(_ url: URL) {
+        guard let code = KelmteenAPI.inviteCode(from: url) else { return }
+        guard isSignedIn else {
+            linkedInviteCode = code
+            return
+        }
+        Task { await showLinkedInvite(code: code) }
+    }
+
+    private func showLinkedInvite(code: String) async {
+        do {
+            if let invite = try await api.invite(code: code) {
+                present([invite])
+            } else {
+                isShowingUnavailableInvite = true
+            }
+        } catch {
+            // Network trouble; the link can be opened again later.
+        }
+    }
+
+    /// Shows the invite from a link opened while signed out, then any invites sent to the
+    /// user's number before they had the app.
+    private func loadInvitesAfterSignIn() async {
+        if let code = linkedInviteCode {
+            linkedInviteCode = nil
+            await showLinkedInvite(code: code)
+        }
+        present((try? await api.pendingInvites()) ?? [])
+    }
+
+    /// Queues invites for display, skipping the user's own link, existing friends and duplicates.
+    private func present(_ invites: [Invite]) {
+        for invite in invites {
+            let inviterID = invite.inviter.id
+            let isDuplicate = presentedInvite?.inviter.id == inviterID
+                || queuedInvites.contains { $0.inviter.id == inviterID }
+            guard inviterID != currentUser?.id, friend(id: inviterID) == nil, !isDuplicate else { continue }
+            queuedInvites.append(invite)
+        }
+        if presentedInvite == nil, !queuedInvites.isEmpty {
+            presentedInvite = queuedInvites.removeFirst()
+        }
+    }
+
+    func accept(_ invite: Invite) async throws {
+        try await api.acceptInvite(code: invite.code)
+        await refreshFriends()
+        selectedTab = .friends
+        showNextInvite()
+    }
+
+    func decline(_ invite: Invite) {
+        Task { try? await api.dismissInvite(code: invite.code) }
+        showNextInvite()
+    }
+
+    /// Closes an invite without answering it.
+    func close(_ invite: Invite) {
+        showNextInvite()
+    }
+
+    /// Unblocks the inviter from their invite screen. If that made them friends again the
+    /// invite is done; otherwise the screen turns into the regular invite to accept.
+    func unblockFromInvite(_ invite: Invite) async throws {
+        try await unblock(invite.inviter)
+        if friend(id: invite.inviter.id) != nil {
+            selectedTab = .friends
+            showNextInvite()
+        } else {
+            presentedInvite?.isBlockedByMe = false
+        }
+    }
+
+    private func showNextInvite() {
+        presentedInvite = queuedInvites.isEmpty ? nil : queuedInvites.removeFirst()
+    }
+
+    // MARK: Blocking
+
+    func isBlocked(_ id: Person.ID) -> Bool {
+        blockedUsers.contains { $0.id == id }
+    }
+
+    func refreshBlockedUsers() async {
+        guard isSignedIn, let fetched = try? await api.blockedUsers() else { return }
+        blockedUsers = fetched
+    }
+
+    /// Blocks someone. They stop being friends (for both people) and can't add the user.
+    func block(_ person: Person) async throws {
+        try await api.blockUser(id: person.id)
+        forget(person)
+        if !isBlocked(person.id) {
+            blockedUsers.append(person)
+        }
+        await refreshBlockedUsers()
+    }
+
+    /// Unblocks someone; they come back as a friend if they were one when blocked.
+    func unblock(_ person: Person) async throws {
+        try await api.unblockUser(id: person.id)
+        blockedUsers.removeAll { $0.id == person.id }
+        await refreshFriends()
+    }
+
+    // MARK: Reporting
+
+    /// Sends a report for moderators to review. The reported person isn't told.
+    func report(_ person: Person, reason: ReportReason, details: String) async throws {
+        try await api.reportUser(id: person.id, reason: reason, details: details)
     }
 
     // MARK: Notes
@@ -231,12 +480,45 @@ final class AppModel {
             .max { $0.sentAt < $1.sentAt }
     }
 
-    @discardableResult
-    func send(_ text: String, to friend: Person) -> Note? {
-        guard let currentUser else { return nil }
-        let note = Note(text: text, senderID: currentUser.id, recipientID: friend.id, sentAt: .now)
+    /// Sends a note through the server, which checks they're still friends.
+    func send(_ text: String, to friend: Person) async throws {
+        let note = try await api.sendNote(text, to: friend.id)
         notes.append(note)
-        return note
+    }
+
+    /// Loads unexpired notes sent and received. Only notes with current friends are kept, so
+    /// notes from someone who was removed or blocked don't come back.
+    func refreshNotes() async {
+        guard isSignedIn, let fetched = try? await api.fetchNotes() else { return }
+        let friendIDs = Set(friends.map(\.id))
+        notes = fetched.filter { friendIDs.contains($0.senderID) || friendIDs.contains($0.recipientID) }
+    }
+
+    /// Reloads everything that friends can change while the app is in the background.
+    func refresh() async {
+        await refreshFriends()
+        await refreshNotes()
+        await registerDevice()
+    }
+
+    /// Tells the server about this phone's widget: the secret it reads notes with and the token
+    /// for push updates (only available once a widget has been added).
+    private func registerDevice() async {
+        guard isSignedIn else { return }
+        let pushToken = await WidgetCenter.shared.currentPushInfo?.token
+            .map { String(format: "%02x", $0) }
+            .joined()
+        #if DEBUG
+        let sandbox = true
+        #else
+        let sandbox = false
+        #endif
+        try? await api.registerDevice(
+            id: WidgetSync.deviceID,
+            widgetSecret: WidgetSync.widgetSecret(),
+            widgetPushToken: pushToken,
+            sandbox: sandbox
+        )
     }
 
     /// Jumps to the Write tab with the given friend preselected.

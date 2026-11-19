@@ -25,20 +25,31 @@ struct Provider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<NoteEntry>) -> Void) {
-        let now = Date.now
-        guard let note = WidgetNoteStore.latestNote(at: now) else {
-            // The app reloads the widget whenever a new note arrives.
-            completion(Timeline(entries: [NoteEntry(date: now, note: nil)], policy: .never))
-            return
-        }
+        Task {
+            let now = Date.now
+            // A push from the server reloads the widget right away when a note is sent; checking
+            // in every 30 minutes is the backup if a push doesn't arrive.
+            let nextCheck = now.addingTimeInterval(30 * 60)
+            guard let note = await WidgetNoteStore.fetchLatestNote(at: now) else {
+                completion(Timeline(entries: [NoteEntry(date: now, note: nil)], policy: .after(nextCheck)))
+                return
+            }
 
-        // One entry every 15 minutes keeps "6 min. ago" fresh. After the last entry the
-        // timeline reloads, which also clears the note once its 24 hours are up.
-        let entries = (0..<24)
-            .map { now.addingTimeInterval(Double($0) * 15 * 60) }
-            .filter { $0 < note.expiresAt }
-            .map { NoteEntry(date: $0, note: note) }
-        completion(Timeline(entries: entries, policy: .atEnd))
+            // An entry every 15 minutes keeps "6 min. ago" fresh until the next check, which
+            // also clears the note once its 24 hours are up.
+            let entries = [now, now.addingTimeInterval(15 * 60)]
+                .filter { $0 < note.expiresAt }
+                .map { NoteEntry(date: $0, note: note) }
+            completion(Timeline(entries: entries, policy: .after(min(nextCheck, note.expiresAt))))
+        }
+    }
+}
+
+/// Receives the push token WidgetKit creates for this widget and passes it to the server,
+/// which uses it to reload the widget when a new note is sent.
+struct NotesWidgetPushHandler: WidgetPushHandler {
+    func pushTokenDidChange(_ pushInfo: WidgetPushInfo, widgets: [WidgetInfo]) {
+        Task { await WidgetNoteStore.savePushToken(pushInfo.token) }
     }
 }
 
@@ -51,6 +62,7 @@ struct NotesWidget: Widget {
         }
         .configurationDisplayName("Notes")
         .description("The latest note from your friends.")
+        .pushHandler(NotesWidgetPushHandler.self)
         .supportedFamilies([
             .systemSmall, .systemMedium, .systemLarge,
             .accessoryRectangular, .accessoryCircular, .accessoryInline

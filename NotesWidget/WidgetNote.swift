@@ -40,6 +40,12 @@ struct WidgetNote: Codable, Hashable {
 enum WidgetNoteStore {
     static let appGroup = "group.com.ahmedshaheen.kelmteen"
     static let notesKey = "receivedNotes"
+    /// Written by the app at sign-in (see WidgetSync); lets the widget read the user's notes.
+    static let widgetSecretKey = "widgetSecret"
+
+    // Public values; the server only returns notes for a valid widget secret.
+    private static let projectURL = URL(string: "https://slwarapujtjzjtlhdciw.supabase.co")!
+    private static let publishableKey = "sb_publishable_OuSLIA4YfvWOaI8B1T-fFw__2cY17Mm"
 
     /// The most recent unexpired note the user received.
     static func latestNote(at date: Date = .now) -> WidgetNote? {
@@ -48,6 +54,78 @@ enum WidgetNoteStore {
         return notes
             .filter { $0.expiresAt > date }
             .max { $0.sentAt < $1.sentAt }
+    }
+
+    /// Loads the user's notes from the server, saves them for next time, and returns the
+    /// newest. Falls back to the last saved notes when offline or signed out.
+    static func fetchLatestNote(at date: Date = .now) async -> WidgetNote? {
+        guard let defaults = UserDefaults(suiteName: appGroup),
+              let secret = defaults.string(forKey: widgetSecretKey) else {
+            return latestNote(at: date)
+        }
+        do {
+            let data = try await callServer("widget_notes", body: ["secret": secret])
+            let notes = try JSONDecoder().decode([ServerNote].self, from: data).map(\.widgetNote)
+            defaults.set(try JSONEncoder().encode(notes), forKey: notesKey)
+        } catch {
+            // Keep showing whatever was saved last.
+        }
+        return latestNote(at: date)
+    }
+
+    /// Reports a new push token to the server so note pushes reach this widget.
+    static func savePushToken(_ token: Data) async {
+        guard let secret = UserDefaults(suiteName: appGroup)?.string(forKey: widgetSecretKey) else { return }
+        let hex = token.map { String(format: "%02x", $0) }.joined()
+        _ = try? await callServer("set_widget_push_token", body: ["secret": secret, "push_token": hex])
+    }
+
+    /// Calls a server function with the publishable key and returns the response body.
+    private static func callServer(_ function: String, body: [String: String]) async throws -> Data {
+        var request = URLRequest(url: projectURL.appending(path: "rest/v1/rpc/\(function)"))
+        request.httpMethod = "POST"
+        request.setValue(publishableKey, forHTTPHeaderField: "apikey")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONEncoder().encode(body)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let status = (response as? HTTPURLResponse)?.statusCode, (200..<300).contains(status) else {
+            throw URLError(.badServerResponse)
+        }
+        return data
+    }
+}
+
+/// A row from the server's `widget_notes` function. Times are seconds since 1970.
+private struct ServerNote: Decodable {
+    let noteText: String
+    let senderName: String
+    let senderColor: String
+    let sentAt: Double
+    let expiresAt: Double
+
+    enum CodingKeys: String, CodingKey {
+        case noteText = "note_text"
+        case senderName = "sender_name"
+        case senderColor = "sender_color"
+        case sentAt = "sent_at"
+        case expiresAt = "expires_at"
+    }
+
+    var widgetNote: WidgetNote {
+        let initials = senderName.split(separator: " ")
+            .prefix(2)
+            .compactMap(\.first)
+            .map(String.init)
+            .joined()
+            .uppercased()
+        return WidgetNote(
+            text: noteText,
+            senderName: senderName,
+            senderInitials: initials,
+            senderColor: senderColor,
+            sentAt: Date(timeIntervalSince1970: sentAt),
+            expiresAt: Date(timeIntervalSince1970: expiresAt)
+        )
     }
 }
 
