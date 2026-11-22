@@ -1,0 +1,1494 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : ""
+          }
+        }
+      }
+    },
+    "%@ invited you to Kelmteen. Friends can send each other little notes that show up on their Home Screen." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ عايزك في كلمتين. ابعتوا لبعض رسايل بتبان على الهوم سكرين. "
+          }
+        }
+      }
+    },
+    "%@ left" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "فاضل %@"
+          }
+        }
+      }
+    },
+    "%@ won't know you reported them." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الريبورت مش هيوصل لـ %@."
+          }
+        }
+      }
+    },
+    "%lld/%lld" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "%1$lld/%2$lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "+20 100 123 4567" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "+20 100 123 4567"
+          }
+        }
+      }
+    },
+    "123456" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "123456"
+          }
+        }
+      }
+    },
+    "Account Suspended" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "الحساب موقوف"
+          }
+        }
+      }
+    },
+    "Add %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "زود %@"
+          }
+        }
+      }
+    },
+    "Add %@ as your friend?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إضافة %@ لاخواتك و حبايبك؟"
+          }
+        }
+      }
+    },
+    "Add a friend to start sending them notes." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "زود حد لاخواتك و حبايبك و تعرف تبعتله رسايل."
+          }
+        }
+      }
+    },
+    "Add Friends" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "زود حد لاخواتك و حبايبك"
+          }
+        }
+      }
+    },
+    "Add friends to send notes to their Home Screen." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "زود حد لاخواتك و حبايبك و هتوصله الرسالة على الهوم سكرين."
+          }
+        }
+      }
+    },
+    "Add me on Kelmteen so we can send each other little notes 💌 %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعالى مع اخواتي و حبايبي على كلمتين ونبعت لبعض رسايل صغيرة 💌 %@"
+          }
+        }
+      }
+    },
+    "Allow access to Contacts in Settings to invite your friends." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خش السيتنجز و اسمح لنا نخش على الكونتاكتس عشان تعرف تبعتهم انفايت"
+          }
+        }
+      }
+    },
+    "Allow Contacts" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسمح لنا نخش على الكونتاكتس"
+          }
+        }
+      }
+    },
+    "Anything that would help us review this" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أي حاجة تساعدنا نراجع الريبورت"
+          }
+        }
+      }
+    },
+    "Block" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بلوك"
+          }
+        }
+      }
+    },
+    "Block %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعمل بلوك لـ %@"
+          }
+        }
+      }
+    },
+    "Block %@?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عايز تبلوك %@؟"
+          }
+        }
+      }
+    },
+    "Blocked" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المتملكين"
+          }
+        }
+      }
+    },
+    "By continuing, you agree to Kelmteen's [Terms](https://kelmteen.ahmedshaheen.com/terms) and [Privacy Policy](https://kelmteen.ahmedshaheen.com/privacy)." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لو كملت تبقا موافق على [شروط](https://kelmteen.ahmedshaheen.com/terms) و[سياسة خصوصية](https://kelmteen.ahmedshaheen.com/privacy) كلمتين."
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فاكس"
+          }
+        }
+      }
+    },
+    "Change profile photo" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير صورة البروفايل"
+          }
+        }
+      }
+    },
+    "Check your connection and try again." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النت شكله فاصل، شوفه كده و جرب تاني."
+          }
+        }
+      }
+    },
+    "Choose More Contacts" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حط كونتاكتس زيادة"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اقفل"
+          }
+        }
+      }
+    },
+    "Coffee later?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صح النوم ينجم"
+          }
+        }
+      }
+    },
+    "Contact Us" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عايزنا في كلمتين؟"
+          }
+        }
+      }
+    },
+    "Contacts Are Off" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مش مسموحلنا نخش على الكونتاكتس"
+          }
+        }
+      }
+    },
+    "Contacts with phone numbers show up here." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الكونتاكتس اللي ليها رقم تليفون هتطلع هنا"
+          }
+        }
+      }
+    },
+    "contactStatus.blocked" : {
+      "comment" : "Status next to a single contact the user blocked",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متبلك"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Blocked"
+          }
+        }
+      }
+    },
+    "contactStatus.friends" : {
+      "comment" : "Status next to a contact who is already a friend",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اخواتك و حبايبك"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Friends"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كمل"
+          }
+        }
+      }
+    },
+    "Couldn't Add Friend" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ماعرفناش نزوده لاخواتك و حبايبك"
+          }
+        }
+      }
+    },
+    "Couldn't Block %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ماعرفناش نبلوك %@"
+          }
+        }
+      }
+    },
+    "Couldn't Delete Account" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ماعرفناش نمسح الحساب"
+          }
+        }
+      }
+    },
+    "Couldn't Send Note" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مش عارفين نبعت الرسالة"
+          }
+        }
+      }
+    },
+    "Couldn't Unblock" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مش عارفين نشيل البلوك"
+          }
+        }
+      }
+    },
+    "Couldn't Update Photo" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مش عارفين نغير الصورة"
+          }
+        }
+      }
+    },
+    "Create Account" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعمل اكونت"
+          }
+        }
+      }
+    },
+    "Delete" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "امسح"
+          }
+        }
+      }
+    },
+    "Delete Account" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "امسح الاكاونت"
+          }
+        }
+      }
+    },
+    "Delete your account?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نمسح الاكونت؟"
+          }
+        }
+      }
+    },
+    "Details (optional)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تفاصيل (مش لازم)"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تمام"
+          }
+        }
+      }
+    },
+    "Edit name" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير الاسم"
+          }
+        }
+      }
+    },
+    "Edit Name" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير الاسم"
+          }
+        }
+      }
+    },
+    "Edit phone number" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير رقم التليفون"
+          }
+        }
+      }
+    },
+    "Enter the code" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتب الكود"
+          }
+        }
+      }
+    },
+    "Find Your Friends" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختار اخواتك و حبايبك"
+          }
+        }
+      }
+    },
+    "Finish setting up your profile first." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لازم تكمل البروفايل بتاعك الاول."
+          }
+        }
+      }
+    },
+    "Friend Removed" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شيلناها (او شيلناه) من اخواتك و حبايبك"
+          }
+        }
+      }
+    },
+    "Friends" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اخواتك و حبايبك"
+          }
+        }
+      }
+    },
+    "Friends find you by your phone number." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اخواتك و حبايبك هيعرفوك من رقم تليفونك"
+          }
+        }
+      }
+    },
+    "General" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حاجات عامة"
+          }
+        }
+      }
+    },
+    "Get Started" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يلا بينا"
+          }
+        }
+      }
+    },
+    "Good luck today!" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انتي في الشغل؟"
+          }
+        }
+      }
+    },
+    "Harassment or offensive notes" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معاكسات او شتايم"
+          }
+        }
+      }
+    },
+    "If you were friends before you blocked them, you'll be friends again." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لو كنتو اخوات و حبايب قبل البلوك ترجعو اخوات و حبايب عادي"
+          }
+        }
+      }
+    },
+    "Inappropriate photo" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صورة مش محترمة"
+          }
+        }
+      }
+    },
+    "Invite" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انفايت"
+          }
+        }
+      }
+    },
+    "Invite %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ضيف %@"
+          }
+        }
+      }
+    },
+    "Invite to Kelmteen" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ضيفه على كلمتين"
+          }
+        }
+      }
+    },
+    "Kelmteen" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "كلمتين"
+          }
+        }
+      }
+    },
+    "Less than an hour left" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "فاضل أقل من ساعة"
+          }
+        }
+      }
+    },
+    "Little notes from your people,\nright on your Home Screen." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رسايل من اخواتك و حبايبك على الهوم سكرين."
+          }
+        }
+      }
+    },
+    "Me" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "أنا"
+          }
+        }
+      }
+    },
+    "More" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حاجات تانية"
+          }
+        }
+      }
+    },
+    "My Account" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكونتي"
+          }
+        }
+      }
+    },
+    "Name" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "الاسم"
+          }
+        }
+      }
+    },
+    "New note on your widget" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رسالة جديدة جات على الويدجت"
+          }
+        }
+      }
+    },
+    "No Blocked People" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش حد متبلك"
+          }
+        }
+      }
+    },
+    "No Contacts" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش كونتاكتس"
+          }
+        }
+      }
+    },
+    "No Friends Yet" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لسه مفيش اخوات و حبايب"
+          }
+        }
+      }
+    },
+    "No Thanks" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا، متشكرين"
+          }
+        }
+      }
+    },
+    "Nothing from %@ yet today" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "لسه مفيش حاجة من %@ النهارده"
+          }
+        }
+      }
+    },
+    "Notifications" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النوتفكيشنز"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "زي الفل"
+          }
+        }
+      }
+    },
+    "On Kelmteen" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "على كلمتين"
+          }
+        }
+      }
+    },
+    "Open Settings" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح السيتنجز"
+          }
+        }
+      }
+    },
+    "People you block show up here." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المتبلكين هيبانو هنا"
+          }
+        }
+      }
+    },
+    "Phone number" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "رقم التليفون"
+          }
+        }
+      }
+    },
+    "Phone Number" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "رقم التليفون"
+          }
+        }
+      }
+    },
+    "Please check your connection and try again. If it keeps failing, email us at %@." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتأكد ان فيه نت كده و جرب تاني. لو لسه فيه مشكلة، ابعتلنا كلمتين على %@."
+          }
+        }
+      }
+    },
+    "Privacy Policy" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "سياسة الخصوصية"
+          }
+        }
+      }
+    },
+    "Read the Terms" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "قراءة الشروط"
+          }
+        }
+      }
+    },
+    "Remove %@?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هتشيل %@ من اخواتك و حبايبك؟"
+          }
+        }
+      }
+    },
+    "Remove Friend" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شيل من اخواتك و حبايبك"
+          }
+        }
+      }
+    },
+    "Report" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ريبورت"
+          }
+        }
+      }
+    },
+    "Report %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ريبورت %@"
+          }
+        }
+      }
+    },
+    "Save" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيف"
+          }
+        }
+      }
+    },
+    "Search contacts" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيرش في الكونتاكتس"
+          }
+        }
+      }
+    },
+    "See which of your contacts are on Kelmteen. Numbers are hashed before they leave your phone, and your contacts are never stored." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مين من الكونتاكتس موجود على كلمتين؟ الأرقام بتتشفر قبل ماتطلع من موبايلك و عمرنا ما هنسجل الكونتاكتس بتاعتك عندنا"
+          }
+        }
+      }
+    },
+    "Send" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ابعتهاله"
+          }
+        }
+      }
+    },
+    "Send to" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ابعت لـ"
+          }
+        }
+      }
+    },
+    "Send to %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ابعت لـ %@"
+          }
+        }
+      }
+    },
+    "Sent to %@." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "الكود اتبعت على %@."
+          }
+        }
+      }
+    },
+    "Sent you something! Check your widget." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بعتلك حاجة! بص على الويدجيت"
+          }
+        }
+      }
+    },
+    "Sign in with your phone number first." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لازم تعمل لوج ان برقم تليفونك الأول"
+          }
+        }
+      }
+    },
+    "Sign Out" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لوج آوت"
+          }
+        }
+      }
+    },
+    "Sign out?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لوج آوت؟"
+          }
+        }
+      }
+    },
+    "Something else" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "حاجة تانية"
+          }
+        }
+      }
+    },
+    "Something went wrong" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فيه مشكلة"
+          }
+        }
+      }
+    },
+    "Something went wrong. Please try again." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فيه مشكلة، جرب تاني بعد اذنك."
+          }
+        }
+      }
+    },
+    "Spam or fake account" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سبام أو فيك اكونت"
+          }
+        }
+      }
+    },
+    "Terms" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "الشروط"
+          }
+        }
+      }
+    },
+    "Thanks for letting us know" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شكرًا على الريبورت"
+          }
+        }
+      }
+    },
+    "That code is wrong or has expired." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الكود ده غلط أو خلصان."
+          }
+        }
+      }
+    },
+    "Thinking of you" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وحشتيني"
+          }
+        }
+      }
+    },
+    "This invite isn't available." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الانفايت دي خلصت."
+          }
+        }
+      }
+    },
+    "This is how you appear to your friends." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الاسم ده هيظهر لاخواتك و حبايبك."
+          }
+        }
+      }
+    },
+    "This permanently deletes your account, friends, notes and photo. It can't be undone." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ده هيمسح الاكاونت اخواتك و حبايبك و كل الرسايل والصورة نهائيًا، ومفيش رجوع بعدها."
+          }
+        }
+      }
+    },
+    "This person isn't on Kelmteen yet." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "الشخص ده لسه مش على كلمتين."
+          }
+        }
+      }
+    },
+    "This shows up on their widget with your notes." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "الاسم ده هيظهر على الويدجت عندهم مع رسايلك."
+          }
+        }
+      }
+    },
+    "Too many tries. Wait a minute and try again." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محاولات كتير. استنى دقيقة كده و جرب تاني."
+          }
+        }
+      }
+    },
+    "Unblock" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شيل البلوك"
+          }
+        }
+      }
+    },
+    "Unblock %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شيل البلوك من %@"
+          }
+        }
+      }
+    },
+    "Unblock %@ to accept their invite." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عشان تقبل الانفايت من %@، لازم تشيل البلوك."
+          }
+        }
+      }
+    },
+    "Unblock %@?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هتشيل البلوك %@؟"
+          }
+        }
+      }
+    },
+    "Unblock this person to accept their invite." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عشان تقبل الانفايت، محتاج تشيل البلوك الأول."
+          }
+        }
+      }
+    },
+    "Verify" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كونفيرم"
+          }
+        }
+      }
+    },
+    "We'll review your report soon." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هنراجع الريبورت قريب."
+          }
+        }
+      }
+    },
+    "We'll text you a code to verify it." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هنبعتلك كود على الSMS عشان نتأكد من الرقم."
+          }
+        }
+      }
+    },
+    "What should friends call you?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسمك ايه عند اخواتك و حبايبك؟"
+          }
+        }
+      }
+    },
+    "What's wrong?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيه اللي حصل؟"
+          }
+        }
+      }
+    },
+    "What's your number?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "رقم تليفونك كام؟"
+          }
+        }
+      }
+    },
+    "Write" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتب حاجة"
+          }
+        }
+      }
+    },
+    "Write a note…" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتب رسالة.."
+          }
+        }
+      }
+    },
+    "Write to %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتب رسالة لـ %@"
+          }
+        }
+      }
+    },
+    "Yes, Sign Out" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لوج آوت"
+          }
+        }
+      }
+    },
+    "You" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أنت"
+          }
+        }
+      }
+    },
+    "You blocked %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ معمولهم بلوك"
+          }
+        }
+      }
+    },
+    "You can't add yourself." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ماينفعش تبعت انفايت لنفسك."
+          }
+        }
+      }
+    },
+    "You can't block yourself." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مينفعش تبلوك نفسك."
+          }
+        }
+      }
+    },
+    "You can't report yourself." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مينفعش تعمل ريبورت لنفسك."
+          }
+        }
+      }
+    },
+    "You haven't sent %@ a note today." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لسه مفيش رسالة منك لـ %@ النهارده."
+          }
+        }
+      }
+    },
+    "You won't be able to send each other notes anymore." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "مش هتقدروا تبعتوا رسايل لبعض تاني."
+          }
+        }
+      }
+    },
+    "You won't be friends anymore and they can't add you. You can unblock them from Me → Blocked." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مش هيبقو من اخواتك و حبايبك تاني و هما مش هيعرفو يدخلوك في اخواتك و حبايبهم. ممكن تشيل البلوك من أنا ← المتبلكين"
+          }
+        }
+      }
+    },
+    "You'll need your phone number to sign back in." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محتاج رقم تليفون عشان تلوج اين تاني."
+          }
+        }
+      }
+    },
+    "You've sent a lot of reports today. Please try again tomorrow." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انت بعت ريبورتات كتير النهاردة. ياريت تحاول تاني بكره."
+          }
+        }
+      }
+    },
+    "You've shared some of your contacts with Kelmteen." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شاركت شوية بس من الكونتاكتس مع كلمتين."
+          }
+        }
+      }
+    },
+    "Your account is suspended." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "الحساب موقوف."
+          }
+        }
+      }
+    },
+    "Your account was suspended for going against Kelmteen's Terms. If you think this is a mistake, email us at %@." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الحساب اتوقف بسبب مخالفة شروط كلمتين. ولو ده حصل بالغلط، ياريت تبعتلنا كلمتين على %@."
+          }
+        }
+      }
+    },
+    "Your name" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "اسمك"
+          }
+        }
+      }
+    },
+    "Your note to %@: %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "رسالتك لـ %1$@: %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Your note to %1$@: %2$@"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.3"
+}

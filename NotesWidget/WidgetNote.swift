@@ -26,7 +26,7 @@ struct WidgetNote: Codable, Hashable {
 
     /// "6 min. ago", as in the design.
     func sentDescription(relativeTo date: Date) -> String {
-        guard date.timeIntervalSince(sentAt) >= 60 else { return "Just now" }
+        guard date.timeIntervalSince(sentAt) >= 60 else { return String(localized: "Just now") }
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .short
         return formatter.localizedString(for: sentAt, relativeTo: date)
@@ -115,9 +115,9 @@ private struct ServerNote: Decodable {
         let initials = senderName.split(separator: " ")
             .prefix(2)
             .compactMap(\.first)
-            .map(String.init)
-            .joined()
-            .uppercased()
+            .map { String($0).uppercased() }
+            // Keeps Arabic initials as separate letters (matches Person.initials in the app).
+            .joined(separator: "\u{200C}")
         return WidgetNote(
             text: noteText,
             senderName: senderName,

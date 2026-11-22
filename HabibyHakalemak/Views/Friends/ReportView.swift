@@ -159,7 +159,7 @@ struct ReportView: View {
             try await model.report(person, reason: reason, details: details)
             withAnimation { isSent = true }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = error.userFacingMessage
         }
     }
 
@@ -170,7 +170,7 @@ struct ReportView: View {
             try await model.block(person)
             dismiss()
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = error.userFacingMessage
         }
     }
 }

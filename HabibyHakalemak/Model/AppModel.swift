@@ -71,9 +71,10 @@ struct Person: Identifiable, Hashable {
         name.split(separator: " ")
             .prefix(2)
             .compactMap(\.first)
-            .map(String.init)
-            .joined()
-            .uppercased()
+            .map { String($0).uppercased() }
+            // A zero-width non-joiner keeps Arabic initials as separate letters instead of
+            // joining them into one word; it's invisible for Latin initials.
+            .joined(separator: "\u{200C}")
     }
 }
 
@@ -104,13 +105,12 @@ struct Note: Identifiable, Hashable {
 
     var isExpired: Bool { expiresAt < .now }
 
-    var timeLeftDescription: String {
+    var timeLeftDescription: LocalizedStringResource {
         let hours = Int(expiresAt.timeIntervalSinceNow / 3600)
-        switch hours {
-        case ..<1: return "Less than an hour left"
-        case 1: return "1 hour left"
-        default: return "\(hours) hours left"
-        }
+        guard hours >= 1 else { return "Less than an hour left" }
+        // The system formatter handles plurals in every language ("18 hours", "١٨ ساعة").
+        let duration = Duration.seconds(hours * 3600).formatted(.units(allowed: [.hours], width: .wide))
+        return "\(duration) left"
     }
 }
 
@@ -124,7 +124,7 @@ enum ReportReason: String, CaseIterable, Identifiable {
 
     var id: Self { self }
 
-    var title: String {
+    var title: LocalizedStringResource {
         switch self {
         case .inappropriatePhoto: "Inappropriate photo"
         case .harassment: "Harassment or offensive notes"
@@ -326,7 +326,7 @@ final class AppModel {
     /// A WhatsApp link that opens a chat with the contact, prefilled with the user's invite link.
     func whatsAppInvite(for contact: ContactEntry) async throws -> URL {
         let inviteLink = try await api.createInvite(phone: contact.invitePhone)
-        let message = "Add me on Kelmteen so we can send each other little notes 💌 \(inviteLink.absoluteString)"
+        let message = String(localized: "Add me on Kelmteen so we can send each other little notes 💌 \(inviteLink.absoluteString)")
         // wa.me wants the number without the leading "+".
         var components = URLComponents(string: "https://wa.me/\(contact.invitePhone.dropFirst())")
         components?.queryItems = [URLQueryItem(name: "text", value: message)]

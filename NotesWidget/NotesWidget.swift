@@ -114,7 +114,8 @@ private struct HomeScreenNoteView: View {
                 .font(textFont)
                 .foregroundStyle(Color.ink)
                 .minimumScaleFactor(0.7)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .noteTextDirection(note.text)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
             HStack(alignment: .bottom) {
                 WidgetAvatar(initials: note.senderInitials, color: note.color, size: isLarge ? 52 : 39)
@@ -212,7 +213,7 @@ private struct LockScreenCircularView: View {
                     .font(.title3)
             }
         }
-        .accessibilityLabel(note.map { "Note from \($0.senderName)" } ?? "No notes yet")
+        .accessibilityLabel(note.map { String(localized: "Note from \($0.senderName)") } ?? String(localized: "No notes yet"))
     }
 }
 

@@ -32,7 +32,9 @@ struct AccountView: View {
                                             .foregroundStyle(Color.ink)
                                             .padding(5)
                                             .background(.white, in: .circle)
-                                            .offset(x: 3, y: 3)
+                                            // Nudges the badge past the corner; guides mirror in right-to-left.
+                                            .alignmentGuide(.trailing) { $0[.trailing] - 3 }
+                                            .alignmentGuide(.bottom) { $0[.bottom] - 3 }
                                     }
                             }
                             // Borderless keeps the rest of the row from opening the picker.
@@ -42,7 +44,7 @@ struct AccountView: View {
                                 Text(user.name)
                                     .font(.title3)
                                     .fontWeight(.semibold)
-                                Text(user.phone)
+                                Text(user.phone.leftToRightIsolated)
                                     .font(.subheadline)
                                     .foregroundStyle(Color.ink.opacity(0.6))
                             }
@@ -113,7 +115,7 @@ struct AccountView: View {
                 do {
                     try await model.setProfilePhoto(data)
                 } catch {
-                    photoErrorMessage = error.localizedDescription
+                    photoErrorMessage = error.userFacingMessage
                 }
             }
             .alert("Delete your account?", isPresented: $isConfirmingDeletion) {
@@ -170,13 +172,13 @@ extension AccountView {
         do {
             try await model.deleteAccount()
         } catch {
-            deletionErrorMessage = "Please check your connection and try again. If it keeps failing, email us at \(KelmteenAPI.supportEmail)."
+            deletionErrorMessage = String(localized: "Please check your connection and try again. If it keeps failing, email us at \(KelmteenAPI.supportEmail).")
         }
     }
 }
 
 private struct AccountRow: View {
-    let title: String
+    let title: LocalizedStringKey
     let systemImage: String
 
     var body: some View {
@@ -241,6 +243,8 @@ private struct EditPhoneView: View {
         Form {
             Section {
                 TextField("Phone number", text: $phone)
+                    // Phone numbers always read left to right.
+                    .environment(\.layoutDirection, .leftToRight)
                     .keyboardType(.phonePad)
                     .textContentType(.telephoneNumber)
             } footer: {
@@ -321,7 +325,7 @@ private struct BlockedUsersView: View {
                     do {
                         try await model.unblock(person)
                     } catch {
-                        errorMessage = error.localizedDescription
+                        errorMessage = error.userFacingMessage
                     }
                 }
             }

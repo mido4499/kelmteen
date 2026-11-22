@@ -118,7 +118,7 @@ struct InviteView: View {
                 try await model.accept(invite)
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = error.userFacingMessage
         }
     }
 }

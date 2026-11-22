@@ -87,7 +87,7 @@ private struct WelcomeView: View {
         .background(Color.lightBackground.ignoresSafeArea())
     }
 
-    private func sampleCard(_ text: String, color: Color) -> some View {
+    private func sampleCard(_ text: LocalizedStringKey, color: Color) -> some View {
         NoteCard(color: color) {
             Text(text).font(.title3)
         }
@@ -118,6 +118,8 @@ private struct PhoneStepView: View {
             }
         ) {
             TextField("+20 100 123 4567", text: $phone)
+                // Phone numbers always read left to right.
+                .environment(\.layoutDirection, .leftToRight)
                 .keyboardType(.phonePad)
                 .textContentType(.telephoneNumber)
                 .focused($isFocused)
@@ -138,7 +140,7 @@ private struct CodeStepView: View {
     var body: some View {
         OnboardingStep(
             title: "Enter the code",
-            subtitle: "Sent to \(phone).",
+            subtitle: "Sent to \(phone.leftToRightIsolated).",
             buttonTitle: "Verify",
             isButtonEnabled: code.count == 6,
             action: {
@@ -147,6 +149,7 @@ private struct CodeStepView: View {
             }
         ) {
             TextField("123456", text: $code)
+                .environment(\.layoutDirection, .leftToRight)
                 .keyboardType(.numberPad)
                 .textContentType(.oneTimeCode)
                 .focused($isFocused)
@@ -186,9 +189,9 @@ private struct NameStepView: View {
 
 /// Shared layout for each sign-up step: a title, one field, and a big button at the bottom.
 private struct OnboardingStep<Field: View>: View {
-    let title: String
-    let subtitle: String
-    let buttonTitle: String
+    let title: LocalizedStringKey
+    let subtitle: LocalizedStringKey
+    let buttonTitle: LocalizedStringKey
     let isButtonEnabled: Bool
     /// Runs when the button is tapped. Errors are shown in an alert.
     let action: () async throws -> Void
@@ -248,7 +251,7 @@ private struct OnboardingStep<Field: View>: View {
             do {
                 try await action()
             } catch {
-                errorMessage = error.localizedDescription
+                errorMessage = error.userFacingMessage
             }
         }
     }

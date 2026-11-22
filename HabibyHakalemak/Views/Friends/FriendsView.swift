@@ -89,7 +89,7 @@ private struct FriendRow: View {
                     .font(.title3)
                     .accessibilityLabel("New note on your widget")
             }
-            Image(systemName: "chevron.right")
+            Image(systemName: "chevron.forward")
                 .font(.headline)
                 .foregroundStyle(Color.ink.opacity(0.5))
         }

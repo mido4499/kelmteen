@@ -158,7 +158,7 @@ struct ContactsView: View {
             contacts = try await model.loadContacts()
         } catch {
             contacts = contacts ?? []
-            errorMessage = error.localizedDescription
+            errorMessage = error.userFacingMessage
         }
     }
 
@@ -168,7 +168,7 @@ struct ContactsView: View {
         do {
             openURL(try await model.whatsAppInvite(for: contact))
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = error.userFacingMessage
         }
     }
 }
@@ -201,12 +201,14 @@ private struct ContactRow: View {
             Spacer()
 
             if isFriend {
-                Text("Friends")
+                Text(LocalizedStringResource("contactStatus.friends", defaultValue: "Friends",
+                                             comment: "Status next to a contact who is already a friend"))
                     .font(.subheadline)
                     .foregroundStyle(Color.ink.opacity(0.5))
             } else if isBlocked {
                 // Unblock from Me → Blocked first; inviting a blocked person makes no sense.
-                Text("Blocked")
+                Text(LocalizedStringResource("contactStatus.blocked", defaultValue: "Blocked",
+                                             comment: "Status next to a single contact the user blocked"))
                     .font(.subheadline)
                     .foregroundStyle(Color.ink.opacity(0.5))
             } else {

@@ -102,6 +102,7 @@ struct ComposeView: View {
         ) {
             TextField("Write a note…", text: $text, axis: .vertical)
                 .font(.note(for: text))
+                .noteTextDirection(text)
                 .focused($isEditing)
                 .submitLabel(.done)
         }
@@ -122,6 +123,7 @@ struct ComposeView: View {
                         .tint(Color.ink)
                 } else {
                     Image(systemName: "paperplane")
+                        .flipsForRightToLeftLayoutDirection(true)
                 }
             }
         }
@@ -153,7 +155,7 @@ struct ComposeView: View {
             model.selectedTab = .friends
         } catch {
             // Keep the text so nothing is lost.
-            sendErrorMessage = "Check your connection and try again."
+            sendErrorMessage = String(localized: "Check your connection and try again.")
         }
     }
 }

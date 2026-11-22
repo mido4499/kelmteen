@@ -53,6 +53,7 @@ struct FriendDetailView: View {
                     ) {
                         Text(sentNote.text)
                             .font(.note(for: sentNote.text))
+                            .noteTextDirection(sentNote.text)
                     }
                     // Keeps the card visible when both people share a color.
                     .shadow(color: .black.opacity(0.12), radius: 12, y: 6)
@@ -77,6 +78,7 @@ struct FriendDetailView: View {
                 model.startNote(to: friend)
             } label: {
                 Image(systemName: "paperplane")
+                    .flipsForRightToLeftLayoutDirection(true)
                     .font(.largeTitle)
                     .foregroundStyle(Color.ink)
                     .padding(6)
@@ -133,7 +135,7 @@ struct FriendDetailView: View {
                         try await model.block(friend)
                         dismiss()
                     } catch {
-                        blockErrorMessage = error.localizedDescription
+                        blockErrorMessage = error.userFacingMessage
                     }
                 }
             }

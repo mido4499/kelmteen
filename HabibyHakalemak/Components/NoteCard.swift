@@ -9,9 +9,9 @@ import SwiftUI
 /// looks on the widget, and hosts either static text or the compose text field.
 struct NoteCard<Content: View>: View {
     var color: Color = .sunshine
-    var footnote: String?
+    var footnote: LocalizedStringResource?
     var sender: Person?
-    var senderLabel: String?
+    var senderLabel: LocalizedStringResource?
     @ViewBuilder var content: Content
 
     var body: some View {
